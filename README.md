@@ -15,7 +15,13 @@ kubectl apply -n argocd \
 `kubectl port-forward svc/argocd-server -n argocd 8080:443`
 
 ### Create a password
-`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+``` bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+``` powershell
+(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}') |
+  ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
+```
 
 ### Deploy Root App
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`

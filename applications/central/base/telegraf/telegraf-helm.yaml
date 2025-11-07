@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: telegraf-config
+    files:
+      - telegraf.conf
+
+helmCharts:
+  - name: telegraf
+    repo: https://helm.influxdata.com/
+    releaseName: my-release
+    valuesInline:
+      agent:
+        interval: "10s"
+        round_interval: true
+      extraVolumes:
+        - name: telegraf-config
+          configMap:
+            name: telegraf-config
+      extraVolumeMounts:
+        - name: telegraf-config
+          mountPath: /etc/telegraf
+          readOnly: true

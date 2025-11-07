@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: victoria-metrics-cluster
+    includeCRDs: true
+    releaseName: vm
+    version: 0.9.9
+    repo: https://victoriametrics.github.io/helm-charts/
+    valuesInline:
+      vmselect:
+        replicaCount: 3
+      vminsert:
+        replicaCount: 3
+      vmstorage:
+        replicaCount: 3
