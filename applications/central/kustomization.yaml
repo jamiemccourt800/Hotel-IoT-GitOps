@@ -3,9 +3,9 @@ kind: Kustomization
 
 namespace: central
 
-resources:
-  - telegraf/kustomization.yaml
-  - victoria-metrics/kustomization.yaml
+#resources:
+#  - telegraf/kustomization.yaml
+#  - victoria-metrics/kustomization.yaml
 #  - deployment.yaml
 #  - service.yaml
 
