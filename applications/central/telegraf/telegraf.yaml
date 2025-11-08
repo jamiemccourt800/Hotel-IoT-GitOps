@@ -1,13 +1,44 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx
+  name: my-telegraf-monitor
+  # The namespace where this Application resource lives (usually the Argo CD namespace)
+  namespace: argocd
 spec:
+  # The project associated with the application (typically 'default')
   project: default
+
+  # Defines the Helm chart source
   source:
-    chart: nginx
-    repoURL: registry-1.docker.io/bitnamicharts  # note: the oci:// syntax is not included.
-    targetRevision: 15.9.0
+    repoURL: https://helm.influxdata.com/ # The Helm repository URL
+    chart: telegraf                       # The name of the chart
+    targetRevision: "1.13.0"              # Specify a stable version if known, or "latest"
+
+    # Inline Helm values override
+    helm:
+      # This block holds the values that were previously in 'valuesInline'
+      values: |
+        agent:
+          interval: "10s"
+          round_interval: true
+        extraVolumes:
+          - name: telegraf-config
+            configMap:
+              name: telegraf-config
+        extraVolumeMounts:
+          - name: telegraf-config
+            mountPath: /etc/telegraf
+            readOnly: true
+
+  # Defines the deployment destination
   destination:
-    name: "in-cluster"
-    namespace: prod
+    server: https://kubernetes.default.svc # Target cluster (default cluster)
+    namespace: telegraf-monitor            # Target namespace for the deployment
+
+  # Defines the synchronization policy
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
