@@ -10,4 +10,4 @@ spec:
     targetRevision: 15.9.0
   destination:
     name: "in-cluster"
-    namespace: nginx
+    namespace: prod
