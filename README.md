@@ -25,6 +25,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### Deploy Root App
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
 
+### Namespaces for apps
+kubectl create namespace central
+kubectl create namespace hotel
+
 ## Dev
 kubectl apply -k environments/prod
 
