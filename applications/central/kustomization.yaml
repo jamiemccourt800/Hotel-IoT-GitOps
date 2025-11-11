@@ -3,11 +3,11 @@ kind: Kustomization
 
 namespace: prod
 
-#resources:
-#  - telegraf/telegraf.yaml
+resources:
+  - telegraf/telegraf.yaml
 #  - victoria-metrics/kustomization.yaml
-#  - deployment.yaml
-#  - service.yaml
+  - command/command-depl.yaml
+  - command/command-svc.yaml
 
 configMapGenerator:
   - name: telegraf-config
@@ -35,17 +35,17 @@ helmCharts:
         - name: telegraf-config
           mountPath: /etc/telegraf
           readOnly: true
-#  - name: victoria-metrics-cluster
-#    includeCRDs: true
-#    releaseName: vm
-#    version: 0.9.9
-#    repo: https://victoriametrics.github.io/helm-charts/
-#    valuesInline:
-#      vmselect:
-#        replicaCount: 3
-#      vminsert:
-#        replicaCount: 3
-#      vmstorage:
-#        replicaCount: 3
+  - name: victoria-metrics-cluster
+    includeCRDs: true
+    releaseName: vm
+    version: 0.9.9
+    repo: https://victoriametrics.github.io/helm-charts/
+    valuesInline:
+      vmselect:
+        replicaCount: 3
+      vminsert:
+        replicaCount: 3
+      vmstorage:
+        replicaCount: 3
 
 
