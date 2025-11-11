@@ -4,3 +4,10 @@ kind: Kustomization
 resources:
   - ./../../applications/central
 
+images:
+  - name: command
+    newName: nfinnegan2023/central-command
+    newTag: stable
+
+
+
