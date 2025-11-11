@@ -19,7 +19,7 @@ spec:
       # This block holds the values that were previously in 'valuesInline'
       values: |
         agent:
-          interval: "10s"
+          interval: "2s"
           round_interval: true
         extraVolumes:
           - name: telegraf-config

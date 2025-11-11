@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: command
+  labels:
+    app: command
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command
+  template:
+    metadata:
+      labels:
+        app: command
+    spec:
+      containers:
+        - name: command
+          image: command:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: API_PORT
+              value: "5000"
+            - name: KAFKA_BOOTSTRAP
+              value: "kafka:9092"
+            - name: KAFKA_TOPIC
+              value: "actuator"
+            - name: CLIENT_ID
+              value: "fastapi-producer"
+            - name: ACKS
+              value: "all"
+            - name: RETRIES
+              value: "10"
+            - name: LINGER_MS
+              value: "5"
