@@ -37,3 +37,8 @@ helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dash
 
 kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+## Kafka
+helm repo add confluentinc https://confluentinc.github.io/cp-helm-charts/   #(1)
+helm repo update    #(2)
+helm install confluentinc/cp-helm-charts --generate-name --namespace central --version 0.6.0    #(3)
