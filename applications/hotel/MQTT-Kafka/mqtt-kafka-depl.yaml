@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt-to-kafka
+  namespace: hotel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqtt-to-kafka
+  template:
+    metadata:
+      labels:
+        app: mqtt-to-kafka
+    spec:
+      containers:
+        - name: mqtt-to-kafka
+          image: dkitdevops/hotel-mqtt-to-kafka:latest
+          env:
+            - name: MQTT_BROKER
+              value: "mosquitto.hotel.svc.cluster.local"
+            - name: MQTT_PORT
+              value: "1883"
+            - name: MQTT_TOPIC
+              value: "hotel_01/#"
+            - name: MQTT_PUB_TOPIC_PREFIX
+              value: "sensors/#"
+            - name: KAFKA_BROKER
+              value: "kafka.central.svc.cluster.local:9092"
+            - name: KAFKA_TOPIC
+              value: "mqtt_messages"
+            - name: KAFKA_ACTIONS_TOPIC
+              value: "executed_actions"
+            - name: SITE_ID
+              value: "hotel1"

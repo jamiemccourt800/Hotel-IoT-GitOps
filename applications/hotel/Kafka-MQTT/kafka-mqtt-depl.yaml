@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-to-mqtt
+  namespace: hotel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-to-mqtt
+  template:
+    metadata:
+      labels:
+        app: kafka-to-mqtt
+    spec:
+      containers:
+        - name: kafka-to-mqtt
+          image: dkitdevops/hotel-kafka-to-mqtt:latest
+          command: ["python", "kafka_to_mqtt.py"]
+          env:
+            - name: KAFKA_BROKER
+              value: "kafka.central.svc.cluster.local:9092"
+            - name: KAFKA_GROUP
+              value: "hotel1-bridge"
+            - name: KAFKA_PATTERN
+              value: "actuators.*"
+            - name: MQTT_BROKER
+              value: "mosquitto.hotel.svc.cluster.local"
+            - name: MQTT_PORT
+              value: "1883"
+            - name: MQTT_QOS
+              value: "1"
+            - name: MQTT_KEEPALIVE
+              value: "60"
+

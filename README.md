@@ -39,6 +39,7 @@ kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
 ## Kafka
-helm repo add confluentinc https://confluentinc.github.io/cp-helm-charts/   #(1)
-helm repo update    #(2)
-helm install confluentinc/cp-helm-charts --generate-name --namespace central --version 0.6.0    #(3)
+helm repo add confluentinc https://packages.confluent.io/helm
+helm repo update
+helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
+kubectl apply -f .\applications\central\kafka\ -n central

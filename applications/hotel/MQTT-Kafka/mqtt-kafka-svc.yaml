@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-to-kafka
+  namespace: hotel
+spec:
+  selector:
+    app: mqtt-to-kafka
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
