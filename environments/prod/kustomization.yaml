@@ -8,7 +8,7 @@ resources:
 images:
   - name: command
     newName: dkitdevops/central-command
-    newTag: stable
+    newTag: latest
 
   - name: app-frontend
     newName: dkitdevops/app-frontend
