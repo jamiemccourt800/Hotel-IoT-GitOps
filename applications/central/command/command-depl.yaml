@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: command
-          image: command:latest
-          imagePullPolicy: IfNotPresent
+          image: command
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           env:
