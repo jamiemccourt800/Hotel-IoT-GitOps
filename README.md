@@ -25,6 +25,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### Deploy Root App
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
 
+### Namespaces for apps
+kubectl create namespace central
+kubectl create namespace hotel
+
 ## Dev
 kubectl apply -k environments/prod
 
@@ -34,3 +38,9 @@ helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dash
 kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+## Kafka
+helm repo add confluentinc https://packages.confluent.io/helm
+helm repo update
+helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
+kubectl apply -f .\applications\central\kafka\ -n central
