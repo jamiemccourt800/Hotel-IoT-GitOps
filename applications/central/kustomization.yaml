@@ -8,6 +8,8 @@ resources:
 #  - victoria-metrics/kustomization.yaml
   - command/command-depl.yaml
   - command/command-svc.yaml
+  - frontend/frontend-depl.yaml
+  - frontend/frontend-svc.yaml
 
 configMapGenerator:
   - name: telegraf-config
