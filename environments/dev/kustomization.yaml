@@ -1,0 +1,20 @@
+resources:
+  - ./../../applications/central
+
+images:
+  - name: command
+    newName: nfinnegan2023/central-command
+    newTag: stable
+  - name: app-frontend
+    newName: dkitdevops/app-frontend
+    newTag: v1.0
+  - name: hotel-kafka-to-mqtt
+    newName: dkitdevops/hotel-kafka-to-mqtt
+    newTag: stable
+
+  - name: hotel-mqtt-to-kafka
+    newName: dkitdevops/hotel-mqtt-to-kafka
+    newTag: stable
+
+
+
