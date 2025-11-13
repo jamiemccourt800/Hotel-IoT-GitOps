@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: temperature-sensor
+  labels:
+    app: temperature-sensor
+spec:
+  type: ClusterIP
+  selector:
+    app: temperature-sensor
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
