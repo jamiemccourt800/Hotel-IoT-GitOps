@@ -10,6 +10,10 @@ images:
     newName: dkitdevops/central-command
     newTag: stable
 
+  - name: app-frontend
+    newName: dkitdevops/app-frontend
+    newTag: v1.0
+
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt
     newTag: stable
