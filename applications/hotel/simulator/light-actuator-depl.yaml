@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: light-actuator
+  labels:
+    app: light-actuator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: light-actuator
+  template:
+    metadata:
+      labels:
+        app: light-actuator
+    spec:
+      containers:
+        - name: light-actuator
+          image: light-actuator:latest
+          imagePullPolicy: Always
+          env:
+            - name: HOTEL_ID
+              value: "hotel_01"
+            - name: ROOM
+              value: "101"
+            - name: SENSOR
+              value: "light-actuator"
+            - name: BROKER
+              value: "mosquitto.hotel.svc.cluster.local"
+            - name: BROKER_PORT
+              value: "1883"
+            - name: QOS
+              value: "1"
+            - name: KEEPALIVE
+              value: "60"
+            - name: INITIAL_ON
+              value: "true"
+            - name: INITIAL_BRIGHTNESS
+              value: "100"

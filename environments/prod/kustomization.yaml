@@ -22,6 +22,18 @@ images:
     newName: dkitdevops/hotel-mqtt-to-kafka
     newTag: stable
 
+  - name: temperature-sensor
+    newName: dkitdevops/hotel-temperature-sensor
+    newTag: latest
+
+  - name: light-actuator
+    newName: dkitdevops/hotel-light-actuator
+    newTag: latest
+
+  - name: alert-agent
+    newName: dkitdevops/hotel-alert-agent
+    newTag: latest
+
 
 
 
