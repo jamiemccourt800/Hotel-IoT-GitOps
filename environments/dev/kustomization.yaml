@@ -1,0 +1,14 @@
+resources:
+  - ./../../applications/central
+  - ./ingress.yaml
+
+images:
+  - name: command
+    newName: nfinnegan2023/central-command
+    newTag: stable
+  - name: app-frontend
+    newName: dkitdevops/app-frontend
+    newTag: v1.0
+
+
+
