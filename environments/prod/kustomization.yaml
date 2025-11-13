@@ -18,6 +18,10 @@ images:
     newName: dkitdevops/hotel-mqtt-to-kafka
     newTag: stable
 
+  - name: temperature-sensor
+    newName: dkitdevops/hotel-temperature-sensor
+    newTag: latest
+
 
 
 
