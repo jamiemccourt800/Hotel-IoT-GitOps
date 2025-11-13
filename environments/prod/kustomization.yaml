@@ -26,6 +26,10 @@ images:
     newName: dkitdevops/hotel-light-actuator
     newTag: latest
 
+  - name: alert-agent
+    newName: dkitdevops/hotel-alert-agent
+    newTag: latest
+
 
 
 

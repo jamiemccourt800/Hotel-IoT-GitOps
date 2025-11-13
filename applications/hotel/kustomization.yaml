@@ -22,6 +22,8 @@ resources:
   - simulator/temperature-sensor-svc.yaml
   - simulator/light-actuator-depl.yaml
   - simulator/light-actuator-svc.yaml
+  - simulator/alert-agent-depl.yaml
+  - simulator/alert-agent-svc.yaml
   
   # Persistent Volume Claims
   - pvc-mosquitto.yaml
