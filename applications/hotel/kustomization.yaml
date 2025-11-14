@@ -18,10 +18,13 @@ resources:
   - Kafka-MQTT/kafka-mqtt-svc.yaml
   
   # Simulator Components
+  - simulator/temperature-sensor-cm.yaml
   - simulator/temperature-sensor-depl.yaml
   - simulator/temperature-sensor-svc.yaml
+  - simulator/light-actuator-cm.yaml
   - simulator/light-actuator-depl.yaml
   - simulator/light-actuator-svc.yaml
+  - simulator/alert-agent-cm.yaml
   - simulator/alert-agent-depl.yaml
   - simulator/alert-agent-svc.yaml
   
