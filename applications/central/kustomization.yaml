@@ -9,6 +9,11 @@ resources:
   - command/command-svc.yaml
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
+  - kafka/kraftbroker_controller.yaml
+  - pvc-grafana.yaml
+  - pvc-mongodb.yaml
+  - pvc-victoria-metrics.yaml
+  - ingress.yml
 
 configMapGenerator:
   - name: telegraf-config

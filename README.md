@@ -44,3 +44,44 @@ helm repo add confluentinc https://packages.confluent.io/helm
 helm repo update
 helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
 kubectl apply -f .\applications\central\kafka\ -n central
+
+## Starting Frontend
+
+### Dev environment
+Uses direct port forwarding to the frontend service.
+
+```bash
+kubectl port-forward svc/frontend-svc 81:80
+```
+
+Access in browser 
+
+```bash
+http://localhost:81
+```
+
+### Test environment
+Uses an ingress with localhost. 
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+kubectl apply -k environments/test/kustomization.yaml
+```
+
+Access in broswer: 
+
+```bash
+http://localhost
+```
+
+### Production environment
+
+Uses ingress with host set to frontend.prod.127.0.0.1.nip.io.
+
+```bash
+k apply -k environments/prod/kustomization.yaml
+```
+
+Access in browser: 
+```bash
+https://frontend.prod.127.0.0.1.nip.io/
+```

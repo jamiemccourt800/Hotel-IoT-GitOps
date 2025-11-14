@@ -5,6 +5,14 @@ resources:
   - ./../../applications/central
   - ./../../applications/hotel
 
+patches:
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: frontend-ingress
+    path: patch-ingress.yaml
+
 images:
   - name: command
     newName: dkitdevops/central-command
