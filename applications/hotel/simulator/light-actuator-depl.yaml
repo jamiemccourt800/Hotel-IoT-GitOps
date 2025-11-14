@@ -5,7 +5,7 @@ metadata:
   labels:
     app: light-actuator
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: light-actuator
@@ -18,22 +18,25 @@ spec:
         - name: light-actuator
           image: light-actuator:latest
           imagePullPolicy: Always
-          env:
-            - name: HOTEL_ID
-              value: "hotel_01"
-            - name: ROOM
-              value: "101"
-            - name: SENSOR
-              value: "light-actuator"
-            - name: BROKER
-              value: "mosquitto.hotel.svc.cluster.local"
-            - name: BROKER_PORT
-              value: "1883"
-            - name: QOS
-              value: "1"
-            - name: KEEPALIVE
-              value: "60"
-            - name: INITIAL_ON
-              value: "true"
-            - name: INITIAL_BRIGHTNESS
-              value: "100"
+          envFrom:
+            - configMapRef:
+                name: light-actuator-config
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
