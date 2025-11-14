@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alert-agent-config
+  labels:
+    app: alert-agent
+data:
+  MQTT_BROKER: "mosquitto.hotel.svc.cluster.local"
+  MQTT_PORT: "1883"
+  MQTT_SUB: "hotel_01/#"
+  MQTT_PUB: "alerts"
+  HOTEL_ID: "hotel_01"
+  ROOM: "101"
+  TEMP_HIGH_C: "30"
+  OFFLINE_TIMEOUT_S: "45"
+  DEDUP_WINDOW_S: "30"
