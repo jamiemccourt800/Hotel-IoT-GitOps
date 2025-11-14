@@ -16,8 +16,15 @@ spec:
     spec:
       containers:
         - name: command
-          image: command:latest
-          imagePullPolicy: IfNotPresent
+          image: command
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
           ports:
             - containerPort: 5000
           env:
