@@ -4,14 +4,13 @@ kind: Kustomization
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
+  - ingress.yaml
 
 patches:
-  - target:
-      group: networking.k8s.io
-      version: v1
-      kind: Ingress
-      name: frontend-ingress
-    path: patch-ingress.yaml
+  - path: grafana-env-patch.yml
+    target:
+      kind: Deployment
+      name: grafana 
 
 images:
   - name: command
@@ -41,7 +40,3 @@ images:
   - name: alert-agent
     newName: dkitdevops/hotel-alert-agent
     newTag: latest
-
-
-
-

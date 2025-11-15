@@ -48,22 +48,34 @@ kubectl apply -f .\applications\central\kafka\ -n central
 ## Starting Frontend
 
 ### Dev environment
-Uses direct port forwarding to the frontend service.
+Uses direct port forwarding.
 
 ```bash
-kubectl port-forward svc/frontend-svc 81:80
+kubectl port-forward svc/frontend-svc 81:80 -n central
+```
+
+Grafana:
+
+```bash
+k port-forward svc/grafana 3001:3000 -n central
 ```
 
 Access in browser 
 
+Frontend 
 ```bash
 http://localhost:81
 ```
 
-### Test environment
-Uses an ingress with localhost. 
+Grafana
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+http://localhost:3001/
+```
+
+
+### Test environment
+Uses an ingress with frontend.test.localhost. \
+```bash
 kubectl apply -k environments/test/kustomization.yaml
 ```
 
@@ -75,7 +87,7 @@ http://localhost
 
 ### Production environment
 
-Uses ingress with host set to frontend.prod.127.0.0.1.nip.io.
+Uses ingress with host set to prod.127.0.0.1.nip.io
 
 ```bash
 k apply -k environments/prod/kustomization.yaml
@@ -85,3 +97,9 @@ Access in browser:
 ```bash
 https://frontend.prod.127.0.0.1.nip.io/
 ```
+
+Grafana:
+```bash
+https://frontend.prod.127.0.0.1.nip.io/grafana
+```
+
