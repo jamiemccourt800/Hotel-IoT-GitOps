@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  labels:
+    grafana_dashboard: "1"
+data:
+  temperature-overview.json: |
+    {
+      "id": null,
+      "title": "Temperature Overview",
+      "timezone": "",
+      "schemaVersion": 36,
+      "version": 1,
+      "refresh": "5s",
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Temperature (C)",
+          "gridPos": {"x": 0, "y": 0, "w": 24, "h": 10},
+          "targets": [
+            {"expr": "temperature_temperatureC", "legendFormat": "{{hotel_id}}/{{room}}/{{sensor}}"}
+          ]
+        }
+      ]
+    }

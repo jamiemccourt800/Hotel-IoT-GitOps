@@ -2,10 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: frontend-ingress
+  namespace: central
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  ingressClassName: nginx
   rules:
-    - host: PLACEHOLDER_HOST
+    - host: "prod.127.0.0.1.nip.io"
       http:
         paths:
           - path: /
@@ -15,3 +17,10 @@ spec:
                 name: frontend-service
                 port:
                   number: 80
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
