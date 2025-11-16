@@ -51,6 +51,11 @@ helmCharts:
     version: 0.9.9
     repo: https://victoriametrics.github.io/helm-charts/
     valuesInline:
+      podSecurityPolicy:
+        enabled: false
+      vmcluster:
+        podSecurityPolicy:
+          enabled: false
       vmselect:
         replicaCount: 3
       vminsert:
