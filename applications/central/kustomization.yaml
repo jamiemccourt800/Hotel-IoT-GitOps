@@ -18,6 +18,7 @@ resources:
   - grafana/grafana-dashboard-provider.yaml
   - grafana/grafana-ds.yaml
   - grafana/grafana-dashboards.yaml
+  - kafka/crds
 
 configMapGenerator:
   - name: telegraf-config
