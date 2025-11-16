@@ -57,8 +57,14 @@ helmCharts:
         podSecurityPolicy:
           enabled: false
       vmselect:
+        podSecurityPolicy:
+          enabled: false
         replicaCount: 3
       vminsert:
+        podSecurityPolicy:
+          enabled: false
         replicaCount: 3
       vmstorage:
+        podSecurityPolicy:
+          enabled: false
         replicaCount: 3
