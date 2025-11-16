@@ -2,9 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - https://raw.githubusercontent.com/confluentinc/confluent-operator/v2.9.1/helm/confluent-for-kubernetes/crds/kafkas.platform.confluent.io.yaml
-  - https://raw.githubusercontent.com/confluentinc/confluent-operator/v2.9.1/helm/confluent-for-kubernetes/crds/kraftcontrollers.platform.confluent.io.yaml
-  - https://raw.githubusercontent.com/confluentinc/confluent-operator/v2.9.1/helm/confluent-for-kubernetes/crds/kafkarestclasses.platform.confluent.io.yaml
-
+  - https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.48.0/strimzi-crds-0.48.0.yaml
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-1"
