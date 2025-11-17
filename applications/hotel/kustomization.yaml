@@ -12,8 +12,5 @@ resources:
   - MQTT-Kafka/mqtt-kafka-depl.yaml
   - MQTT-Kafka/mqtt-kafka-svc.yaml
 
-helmCharts:
-  - name: confluent-for-kubernetes
-    repo: https://packages.confluent.io/helm
-    releaseName: confluent-operator
-    namespace: central
+# NOTE: Helm chart moved to separate Argo CD Application in argo-cd/charts/confluent.yaml
+# Apply that Application to deploy the confluent-for-kubernetes Helm chart.

@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: confluent-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://packages.confluent.io/helm
+    chart: confluent-for-kubernetes
+    targetRevision: '*'  # Use latest version, pin to specific version in production
+    helm:
+      releaseName: confluent-operator
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: central
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
