@@ -58,8 +58,10 @@ helmCharts:
         replicaCount: 3
       vmstorage:
         replicaCount: 3
-  - name: kafka
-    repo: https://packages.confluent.io/helm
+  - name: confluent-for-kubernetes
+    repo: https://packages.confluent.io/helm/
     includeCRDs: true
     releaseName: confluent-operator
-
+    valuesInline:
+      operator:
+        enabled: true

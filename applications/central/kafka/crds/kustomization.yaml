@@ -1,7 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-  - https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.48.0/strimzi-crds-0.48.0.yaml
-commonAnnotations:
-  argocd.argoproj.io/sync-wave: "-1"
