@@ -2,14 +2,24 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../applications/central
-  - ../../applications/hotel
-  - ../../storage/overlays/prod
+  - ./../../applications/central
+  - ./../../applications/hotel
+  - ingress.yaml
+
+patches:
+  - path: grafana-env-patch.yml
+    target:
+      kind: Deployment
+      name: grafana 
 
 images:
   - name: command
     newName: dkitdevops/central-command
-    newTag: stable
+    newTag: latest
+
+  - name: app-frontend
+    newName: dkitdevops/app-frontend
+    newTag: v1.0
 
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt
@@ -19,6 +29,14 @@ images:
     newName: dkitdevops/hotel-mqtt-to-kafka
     newTag: stable
 
+  - name: temperature-sensor
+    newName: dkitdevops/hotel-temperature-sensor
+    newTag: latest
 
+  - name: light-actuator
+    newName: dkitdevops/hotel-light-actuator
+    newTag: latest
 
-
+  - name: alert-agent
+    newName: dkitdevops/hotel-alert-agent
+    newTag: latest

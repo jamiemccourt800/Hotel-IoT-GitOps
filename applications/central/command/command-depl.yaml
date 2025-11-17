@@ -16,15 +16,22 @@ spec:
     spec:
       containers:
         - name: command
-          image: command:latest
-          imagePullPolicy: IfNotPresent
+          image: command
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
           ports:
             - containerPort: 5000
           env:
             - name: API_PORT
               value: "5000"
             - name: KAFKA_BOOTSTRAP
-              value: "kafka:9092"
+              value: "kafka.central.svc.cluster.local:9092"
             - name: KAFKA_TOPIC
               value: "actuator"
             - name: CLIENT_ID

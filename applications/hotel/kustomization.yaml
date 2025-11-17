@@ -4,13 +4,26 @@ kind: Kustomization
 namespace: hotel
 
 resources:
-  - Kafka-MQTT/kafka-mqtt-depl.yaml
-  - Kafka-MQTT/kafka-mqtt-svc.yaml
+  # MQTT Broker
   - MQTT/mosquitto-cm.yaml
   - MQTT/mosquitto-depl.yaml
   - MQTT/mosquitto-svc.yaml
+  
+  # MQTT to Kafka Bridge (sensor data to central)
   - MQTT-Kafka/mqtt-kafka-depl.yaml
   - MQTT-Kafka/mqtt-kafka-svc.yaml
-
-# NOTE: Helm chart moved to separate Argo CD Application in argo-cd/charts/confluent.yaml
-# Apply that Application to deploy the confluent-for-kubernetes Helm chart.
+  
+  # Kafka to MQTT Bridge (commands from central)
+  - Kafka-MQTT/kafka-mqtt-depl.yaml
+  - Kafka-MQTT/kafka-mqtt-svc.yaml
+  
+  # Simulator Components
+  - simulator/temperature-sensor-depl.yaml
+  - simulator/temperature-sensor-svc.yaml
+  - simulator/light-actuator-depl.yaml
+  - simulator/light-actuator-svc.yaml
+  - simulator/alert-agent-depl.yaml
+  - simulator/alert-agent-svc.yaml
+  
+  # Persistent Volume Claims
+  - pvc-mosquitto.yaml

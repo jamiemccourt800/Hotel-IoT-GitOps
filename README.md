@@ -25,6 +25,9 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ### Deploy Root App
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
 
+if the root-app set before argocd-cm, you may need restart the argocd-server pod
+`kubectl rollout restart -n argocd deployment argocd-repo-server` 
+
 ### Namespaces for apps
 kubectl create namespace central
 kubectl create namespace hotel
@@ -36,6 +39,7 @@ kubectl apply -k environments/prod
 helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
 
 kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
 ## Kafka
@@ -43,3 +47,62 @@ helm repo add confluentinc https://packages.confluent.io/helm
 helm repo update
 helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
 kubectl apply -f .\applications\central\kafka\ -n central
+
+## Starting Frontend
+
+### Dev environment
+Uses direct port forwarding.
+
+```bash
+kubectl port-forward svc/frontend-svc 81:80 -n central
+```
+
+Grafana:
+
+```bash
+k port-forward svc/grafana 3001:3000 -n central
+```
+
+Access in browser 
+
+Frontend 
+```bash
+http://localhost:81
+```
+
+Grafana
+```bash
+http://localhost:3001/
+```
+
+
+### Test environment
+Uses an ingress with frontend.test.localhost. \
+```bash
+kubectl apply -k environments/test/kustomization.yaml
+```
+
+Access in broswer: 
+
+```bash
+http://localhost
+```
+
+### Production environment
+
+Uses ingress with host set to prod.127.0.0.1.nip.io
+
+```bash
+k apply -k environments/prod/kustomization.yaml
+```
+
+Access in browser: 
+```bash
+https://frontend.prod.127.0.0.1.nip.io/
+```
+
+Grafana:
+```bash
+https://frontend.prod.127.0.0.1.nip.io/grafana
+```
+

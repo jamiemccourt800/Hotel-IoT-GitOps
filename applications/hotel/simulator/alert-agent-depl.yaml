@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert-agent
+  labels:
+    app: alert-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alert-agent
+  template:
+    metadata:
+      labels:
+        app: alert-agent
+    spec:
+      containers:
+        - name: alert-agent
+          image: alert-agent:latest
+          imagePullPolicy: Always
+          env:
+            - name: MQTT_BROKER
+              value: "mosquitto.hotel.svc.cluster.local"
+            - name: MQTT_PORT
+              value: "1883"
+            - name: MQTT_SUB
+              value: "hotel_01/#"
+            - name: MQTT_PUB
+              value: "alerts"
+            - name: HOTEL_ID
+              value: "hotel_01"
+            - name: ROOM
+              value: "101"
+            - name: TEMP_HIGH_C
+              value: "30"
+            - name: OFFLINE_TIMEOUT_S
+              value: "45"
+            - name: DEDUP_WINDOW_S
+              value: "30"
