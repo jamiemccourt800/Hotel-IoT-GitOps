@@ -18,7 +18,6 @@ resources:
   - grafana/grafana-dashboard-provider.yaml
   - grafana/grafana-ds.yaml
   - grafana/grafana-dashboards.yaml
-  - kafka/crds
 
 configMapGenerator:
   - name: telegraf-config
@@ -59,3 +58,8 @@ helmCharts:
         replicaCount: 3
       vmstorage:
         replicaCount: 3
+  - name: kafka
+    repo: https://packages.confluent.io/helm
+    includeCRDs: true
+    releaseName: confluent-operator
+
