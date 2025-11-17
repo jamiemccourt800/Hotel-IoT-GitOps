@@ -18,7 +18,7 @@ images:
     newTag: latest
 
   - name: app-frontend
-    newName: dkitdevops/app-frontend
+    newName: dkitdevops/central-app-frontend
     newTag: latest
 
   - name: hotel-kafka-to-mqtt
