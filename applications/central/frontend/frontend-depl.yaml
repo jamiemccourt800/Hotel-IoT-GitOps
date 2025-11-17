@@ -29,7 +29,7 @@ spec:
             - containerPort: 80
           env:
             - name: REACT_APP_COMMAND_SERVICE_URL
-              value: "http://command-service:5000"
+              value: "http://command.central.svc.cluster.local:5000"
             - name: REACT_APP_HOTELID
               value: "hotel_01"
             - name: REACT_APP_ROOMID
