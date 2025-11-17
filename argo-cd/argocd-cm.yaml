@@ -7,6 +7,8 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
+  # Increase timeout for manifest generation (default is 90s)
+  timeout.reconciliation: 300s
   kustomize.buildOptions: --enable-helm
   # Exclude CRDs (CustomResourceDefinition) from Argo CD sync/health checks.
   # This avoids ArgoCD timing out when evaluating health for CRDs from large
