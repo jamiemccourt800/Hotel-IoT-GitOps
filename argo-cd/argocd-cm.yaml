@@ -8,6 +8,14 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   kustomize.buildOptions: --enable-helm
+  # Exclude CRDs (CustomResourceDefinition) from Argo CD sync/health checks.
+  # This avoids ArgoCD timing out when evaluating health for CRDs from large
+  # operators (e.g. Confluent) which may take long to become healthy.
+  resource.exclusions: |
+    - apiGroups:
+        - apiextensions.k8s.io
+      kinds:
+        - CustomResourceDefinition
   resource.customizations.health.apiextensions.k8s.io_CustomResourceDefinition: |
     hs = {}
     hs.status = "Healthy"
