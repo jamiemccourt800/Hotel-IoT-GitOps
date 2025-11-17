@@ -31,7 +31,7 @@ spec:
             - name: API_PORT
               value: "5000"
             - name: KAFKA_BOOTSTRAP
-              value: "kafka.confluent.svc.cluster.local:9092"
+              value: "kafka.central.svc.cluster.local:9092"
             - name: KAFKA_TOPIC
               value: "actuator"
             - name: CLIENT_ID
