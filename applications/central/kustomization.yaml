@@ -11,7 +11,9 @@ resources:
   - frontend/frontend-svc.yaml
   - kafka/kafka.yaml
   - pvc-grafana.yaml
-  - pvc-mongodb.yaml
+  - userdb/pvc-mongodb.yaml
+  - userdb/userdb-depl.yaml
+  - userdb/userdb-svc.yaml
   - pvc-victoria-metrics.yaml
   - grafana/grafana-depl.yaml
   - grafana/grafana-svc.yaml
