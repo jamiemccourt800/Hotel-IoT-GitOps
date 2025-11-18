@@ -1,39 +1,35 @@
-apiVersion: platform.confluent.io/v1beta1
-kind: KRaftController
-metadata:
-  name: kraftcontroller
-  namespace: central
-spec:
-  dataVolumeCapacity: 1G
-  image:
-    application: docker.io/confluentinc/cp-server:7.9.1
-    init: confluentinc/confluent-init-container:2.11.1
-  replicas: 3
----
-apiVersion: platform.confluent.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: kafka
   namespace: central
 spec:
-  dataVolumeCapacity: 1G
-  image:
-    application: docker.io/confluentinc/cp-server:7.9.1
-    init: confluentinc/confluent-init-container:2.11.1
-  replicas: 3
-  dependencies:
-    kRaftController:
-      clusterRef:
-        name: kraftcontroller
----
-apiVersion: platform.confluent.io/v1beta1
-kind: KafkaRestClass
-metadata:
-  name: krc-cfk
-  namespace: central
-spec:
-  kafkaClusterRef:
-    name: kafka
-  kafkaRest:
-    endpoint: http://kafka.central.svc.cluster.local:8090
-
+  kafka:
+    version: 3.9.0
+    replicas: 3
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      inter.broker.protocol.version: "3.9"
+    storage:
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: 1Gi
+        deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
