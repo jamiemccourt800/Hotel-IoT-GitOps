@@ -10,7 +10,6 @@ resources:
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
   - kafka/kraftbroker_controller.yaml
-  - kafka/kafka-bootstrap.yml
   - pvc-grafana.yaml
   - userdb/pvc-mongodb.yaml
   - userdb/userdb-depl.yaml
@@ -32,39 +31,39 @@ generatorOptions:
   disableNameSuffixHash: true
 
 
-# helmCharts:
-#   - name: telegraf
-#     repo: https://helm.influxdata.com/
-#     releaseName: my-release
-#     valuesInline:
-#       agent:
-#         interval: "2s"
-#         round_interval: true
-#       extraVolumes:
-#         - name: telegraf-config
-#           configMap:
-#             name: telegraf-config
-#       extraVolumeMounts:
-#         - name: telegraf-config
-#           mountPath: /etc/telegraf
-#           readOnly: true
-#   - name: victoria-metrics-cluster
-#     includeCRDs: true
-#     releaseName: vm
-#     version: 0.29.4
-#     repo: https://victoriametrics.github.io/helm-charts/
-#     valuesInline:
-#       vmcluster:
-#       vmselect:
-#         replicaCount: 3
-#       vminsert:
-#         replicaCount: 3
-#       vmstorage:
-#         replicaCount: 3
-#   - name: confluent-for-kubernetes
-#     repo: https://packages.confluent.io/helm/
-#     includeCRDs: true
-#     releaseName: confluent-operator
-#     valuesInline:
-#       operator:
-#         enabled: true
+helmCharts:
+  - name: telegraf
+    repo: https://helm.influxdata.com/
+    releaseName: my-release
+    valuesInline:
+      agent:
+        interval: "2s"
+        round_interval: true
+      extraVolumes:
+        - name: telegraf-config
+          configMap:
+            name: telegraf-config
+      extraVolumeMounts:
+        - name: telegraf-config
+          mountPath: /etc/telegraf
+          readOnly: true
+  - name: victoria-metrics-cluster
+    includeCRDs: true
+    releaseName: vm
+    version: 0.29.4
+    repo: https://victoriametrics.github.io/helm-charts/
+    valuesInline:
+      vmcluster:
+      vmselect:
+        replicaCount: 3
+      vminsert:
+        replicaCount: 3
+      vmstorage:
+        replicaCount: 3
+  - name: confluent-for-kubernetes
+    repo: https://packages.confluent.io/helm/
+    includeCRDs: true
+    releaseName: confluent-operator
+    valuesInline:
+      operator:
+        enabled: true
