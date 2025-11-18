@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: central
+spec:
+  type: ExternalName
+  externalName: kafka-kafka-bootstrap.central.svc.cluster.local
+  ports:
+    - name: plain
+      port: 9092
+      targetPort: 9092
+      protocol: TCP
+    - name: tls
+      port: 9093
+      targetPort: 9093
+      protocol: TCP
