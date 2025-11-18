@@ -10,20 +10,6 @@ spec:
     - host: "prod.127.0.0.1.nip.io"
       http:
         paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: command
-                port:
-                  number: 5000
-          - path: /grafana
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  number: 3000
           - path: /
             pathType: Prefix
             backend:
@@ -31,3 +17,10 @@ spec:
                 name: frontend-service
                 port:
                   number: 80
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
