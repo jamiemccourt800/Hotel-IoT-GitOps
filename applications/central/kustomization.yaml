@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: central
 
 resources:
+  - strimzi/strimzi-crds-0.44.0.yaml
   - telegraf/telegraf.yaml
   - command/command-depl.yaml
   - command/command-svc.yaml
@@ -65,7 +66,6 @@ helmCharts:
         replicaCount: 3
   - name: strimzi-kafka-operator
     repo: https://strimzi.io/charts/
-    includeCRDs: true
     releaseName: strimzi
     version: 0.44.0
     namespace: central
