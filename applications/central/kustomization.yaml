@@ -36,6 +36,7 @@ helmCharts:
   - name: telegraf
     repo: https://helm.influxdata.com/
     releaseName: my-release
+    namespace: central
     valuesInline:
       agent:
         interval: "2s"
@@ -53,6 +54,7 @@ helmCharts:
     releaseName: vm
     version: 0.29.4
     repo: https://victoriametrics.github.io/helm-charts/
+    namespace: central
     valuesInline:
       vmcluster:
       vmselect:
@@ -66,7 +68,7 @@ helmCharts:
     includeCRDs: true
     releaseName: strimzi
     version: 0.44.0
+    namespace: central
     valuesInline:
       watchAnyNamespace: false
-      watchNamespaces:
-        - central
+      # Strimzi watches only the release namespace (central), avoiding duplicate RoleBindings.
