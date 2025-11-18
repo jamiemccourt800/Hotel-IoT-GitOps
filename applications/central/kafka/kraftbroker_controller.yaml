@@ -36,3 +36,4 @@ spec:
     name: kafka
   kafkaRest:
     endpoint: http://kafka.central.svc.cluster.local:8090
+
