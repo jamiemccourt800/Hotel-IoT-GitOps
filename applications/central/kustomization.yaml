@@ -10,7 +10,6 @@ resources:
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
   - kafka/kraftbroker_controller.yaml
-  - kafka/kafka-bootstrap.yml
   - pvc-grafana.yaml
   - userdb/pvc-mongodb.yaml
   - userdb/userdb-depl.yaml
