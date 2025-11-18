@@ -16,13 +16,11 @@ metadata:
   name: kafka
   namespace: central
 spec:
-  replicas: 3
-  dataVolumeCapacity: 10Gi
+  dataVolumeCapacity: 1G
   image:
-    application: confluentinc/cp-server:7.9.1
+    application: docker.io/confluentinc/cp-server:7.9.1
     init: confluentinc/confluent-init-container:2.11.1
-  listeners:
-    internal: {}
+  replicas: 3
   dependencies:
     kRaftController:
       clusterRef:
@@ -37,4 +35,4 @@ spec:
   kafkaClusterRef:
     name: kafka
   kafkaRest:
-    endpoint: http://kafka.confluent.svc.cluster.local:8090
+    endpoint: http://kafka.central.svc.cluster.local:8090
