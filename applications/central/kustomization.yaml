@@ -9,8 +9,7 @@ resources:
   - command/command-svc.yaml
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
-  - kafka/kafka.yaml
-  - kafka/kafka-alias-svc.yaml
+  - kafka/kraftbroker_controller.yaml
   - pvc-grafana.yaml
   - userdb/pvc-mongodb.yaml
   - userdb/userdb-depl.yaml
@@ -61,12 +60,10 @@ helmCharts:
         replicaCount: 3
       vmstorage:
         replicaCount: 3
-  - name: strimzi-kafka-operator
-    repo: https://strimzi.io/charts/
+  - name: confluent-for-kubernetes
+    repo: https://packages.confluent.io/helm/
     includeCRDs: true
-    releaseName: strimzi
-    version: 0.44.0
+    releaseName: confluent-operator
     valuesInline:
-      watchAnyNamespace: false
-      watchNamespaces:
-        - central
+      operator:
+        enabled: true
