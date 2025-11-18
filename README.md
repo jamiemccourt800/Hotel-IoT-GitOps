@@ -107,7 +107,7 @@ https://frontend.prod.127.0.0.1.nip.io/grafana
 ```
 
 ## Kafka Ports
-kafka.central.svc.cluster.local:9092
+kafka.central.svc.cluster.local:9092 alias back to
 kafka-kafka-bootstrap.central.svc.cluster.local:9092
 9092 - Plain
 9093 - TLS

@@ -10,6 +10,7 @@ resources:
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
   - kafka/kafka.yaml
+  - kafka/kafka-alias-svc.yaml
   - pvc-grafana.yaml
   - userdb/pvc-mongodb.yaml
   - userdb/userdb-depl.yaml
