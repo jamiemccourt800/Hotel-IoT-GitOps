@@ -48,13 +48,15 @@ helm repo update
 helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
 kubectl apply -f .\applications\central\kafka\ -n central
 
+kubectl apply -f https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.46.0/strimzi-crds-0.46.0.yaml 
+
 ## Starting Frontend
 
 ### Dev environment
 Uses direct port forwarding.
 
 ```bash
-kubectl port-forward svc/frontend-svc 81:80 -n central
+kubectl port-forward svc/frontend-service 8081:80 -n central
 ```
 
 Grafana:
@@ -67,7 +69,7 @@ Access in browser
 
 Frontend 
 ```bash
-http://localhost:81
+http://localhost:8081
 ```
 
 Grafana
@@ -104,5 +106,6 @@ https://frontend.prod.127.0.0.1.nip.io/
 Grafana:
 ```bash
 https://frontend.prod.127.0.0.1.nip.io/grafana
+
 ```
 
