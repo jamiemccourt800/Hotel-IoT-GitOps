@@ -71,4 +71,6 @@ helmCharts:
     namespace: central
     valuesInline:
       watchAnyNamespace: false
+      crds:
+        install: true
       # Strimzi watches only the release namespace (central), avoiding duplicate RoleBindings.
