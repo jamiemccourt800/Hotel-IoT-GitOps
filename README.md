@@ -8,6 +8,8 @@ This repository defines the **GitOps structure** for deploying all services usin
 ### Install ArgoCD
 ``` bash
 kubectl create namespace argocd
+
+
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 ### Make a port forward
@@ -21,6 +23,8 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 (kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}') |
   ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 ```
+
+kubectl apply -n argocd -f argo-cd/argocd-cm.yaml
 
 ### Deploy Root App
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
@@ -42,12 +46,11 @@ kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
-## Kafka
-helm repo add confluentinc https://packages.confluent.io/helm
-helm repo update
-helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
-kubectl apply -f .\applications\central\kafka\ -n central
+## Minikube Ingress
+ minikube addons enable ingress
+ minikube tunnel
 
+## Kafka
 kubectl apply -f https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.44.0/strimzi-crds-0.44.0.yaml
 
 ## Starting Frontend

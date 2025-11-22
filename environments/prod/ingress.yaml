@@ -24,10 +24,10 @@ spec:
                 name: grafana
                 port:
                   number: 3000
-          - path: /command
-            pathType: Prefix
+          - path: /command(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: command
-                port:
-                  number: 5000
+              name: command
+              port:
+                number: 5000
