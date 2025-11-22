@@ -18,8 +18,8 @@ spec:
                 name: frontend-service
                 port:
                   number: 80
-          - path: /grafana
-            pathType: Prefix
+          - path: /grafana(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: grafana
