@@ -42,3 +42,5 @@ spec:
               value: "10"
             - name: LINGER_MS
               value: "5"
+            - name: VICTORIA_BASE_URL
+              value: "http://vm-victoria-metrics-cluster-vmselect.central.svc.cluster.local:8481"
