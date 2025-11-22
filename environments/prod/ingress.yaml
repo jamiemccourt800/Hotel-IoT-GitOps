@@ -28,6 +28,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-              name: command
-              port:
-                number: 5000
+                name: command
+                port:
+                  number: 5000
