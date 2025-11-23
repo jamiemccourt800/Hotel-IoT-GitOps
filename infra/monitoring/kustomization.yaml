@@ -11,4 +11,5 @@ helmCharts:
     namespace: monitoring
     valuesFile: values-kube-prometheus-stack.yaml
 
-resources: []
+resources:
+  - namespace.yaml
