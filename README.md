@@ -33,6 +33,9 @@ First needs to install the CRDs using the declarative approach
 Then deploy the root app
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
 
+Then deploy the infra apps like Prometheus, Grafana, etc.
+`kubectl apply -f argo-cd/infra-app.yaml -n argocd`
+
 if the root-app set before argocd-cm, you may need restart the argocd-server pod
 `kubectl rollout restart -n argocd deployment argocd-repo-server` 
 

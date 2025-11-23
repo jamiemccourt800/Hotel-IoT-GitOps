@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://gitlab.comp.dkit.ie/D00271292/devops-project-gitops.git
     targetRevision: main
-    path: infrastructure/crds
+    path: infra/crds
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
