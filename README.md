@@ -26,7 +26,11 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 kubectl apply -n argocd -f argo-cd/argocd-cm.yaml
 
-### Deploy Root App
+### Deploy ArgoCD Apps
+First needs to install the CRDs using the declarative approach
+`kubectl apply -f argo-cd/crd-app.yaml -n argocd`
+
+Then deploy the root app
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
 
 if the root-app set before argocd-cm, you may need restart the argocd-server pod
