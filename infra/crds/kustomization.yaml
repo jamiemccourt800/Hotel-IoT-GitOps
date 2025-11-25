@@ -5,3 +5,5 @@ namespace: argocd
 
 resources:
   - prometheus/crds.yaml
+  - https://raw.githubusercontent.com/elastic/cloud-on-k8s/refs/heads/3.2/config/crds/v1/resources/elasticsearch.k8s.elastic.co_elasticsearches.yaml
+  - https://raw.githubusercontent.com/elastic/cloud-on-k8s/refs/heads/3.2/config/crds/v1/resources/kibana.k8s.elastic.co_kibanas.yaml
