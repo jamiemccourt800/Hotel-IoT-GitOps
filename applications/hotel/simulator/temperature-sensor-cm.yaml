@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: temperature-sensor-config
+  labels:
+    app: temperature-sensor
+data:
+  HOTEL_ID: "hotel_01"
+  ROOM: "101"
+  SENSOR: "temperature-sensor"
+  MQTT_BROKER: "mosquitto.hotel.svc.cluster.local"
+  MQTT_PORT: "1883"
+  TARGET_TEMP: "21.0"
+  START_TEMP: "21.0"
+  INTERVAL: "1.0"
+  SPEED: "1.0"
+  QOS: "1"
+  KEEPALIVE: "60"

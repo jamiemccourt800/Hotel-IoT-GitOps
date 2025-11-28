@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: humidity-actuator-config
+  labels:
+    app: humidity-actuator
+data:
+  HOTEL_ID: "hotel_01"
+  ROOM: "101"
+  SENSOR: "humidity-actuator"
+  MQTT_BROKER: "mosquitto.hotel.svc.cluster.local"
+  MQTT_PORT: "1883"
+  QOS: "1"
+  KEEPALIVE: "60"
+  DEFAULT_TARGET: "50.0"
+  CONTROL_INTERVAL: "5.0"
+  DEADBAND: "2.0"
+  MAX_HUMIDIFYING: "100.0"
+  MAX_DEHUMIDIFYING: "100.0"
