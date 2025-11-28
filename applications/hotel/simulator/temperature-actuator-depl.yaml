@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temperature-actuator
+  labels:
+    app: temperature-actuator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temperature-actuator
+  template:
+    metadata:
+      labels:
+        app: temperature-actuator
+    spec:
+      containers:
+        - name: temperature-actuator
+          image: dkitdevops/hotel-temperature-actuator:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: temperature-actuator-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: humidity-sensor-config
+  labels:
+    app: humidity-sensor
+data:
+  HOTEL_ID: "hotel_01"
+  ROOM: "101"
+  SENSOR: "humidity-sensor"
+  MQTT_BROKER: "mosquitto.hotel.svc.cluster.local"
+  MQTT_PORT: "1883"
+  QOS: "1"
+  KEEPALIVE: "60"
+  TARGET_HUMIDITY: "50.0"
+  START_HUMIDITY: "50.0"
+  INTERVAL: "1.0"
+  SPEED: "1.0"

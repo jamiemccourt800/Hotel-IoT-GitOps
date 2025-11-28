@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: humidity-sensor
+  labels:
+    app: humidity-sensor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: humidity-sensor
+  template:
+    metadata:
+      labels:
+        app: humidity-sensor
+    spec:
+      containers:
+        - name: humidity-sensor
+          image: dkitdevops/hotel-humidity-sensor:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: humidity-sensor-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
