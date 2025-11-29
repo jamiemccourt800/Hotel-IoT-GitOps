@@ -31,10 +31,10 @@ spec:
                 name: command
                 port:
                   number: 5000
-          - path: /booking-api
+          - path: /booking_api
             pathType: Prefix
             backend:
               service:
                 name: booking-api-service
                 port:
-                  number: 3003
+                  number: 8000

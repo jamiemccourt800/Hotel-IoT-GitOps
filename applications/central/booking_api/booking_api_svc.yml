@@ -6,6 +6,6 @@ spec:
   selector:
     app: booking-api
   ports:
-  - port: 3003
-    targetPort: 3003
+  - port: 8000
+    targetPort: 8000
   type: ClusterIP

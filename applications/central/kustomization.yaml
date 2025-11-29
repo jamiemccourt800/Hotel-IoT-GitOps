@@ -15,6 +15,7 @@ resources:
   - userdb/pvc-mongodb.yaml
   - userdb/userdb-depl.yaml
   - userdb/userdb-svc.yaml
+  - userdb/mongodb-secret.yml
   - pvc-victoria-metrics.yaml
   - grafana/grafana-depl.yaml
   - grafana/grafana-svc.yaml

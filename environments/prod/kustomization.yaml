@@ -43,5 +43,5 @@ images:
   
   - name: booking-api
     newName: dkitdevops/booking_api
-    newTag: v1.0
+    newTag: v1.1
   
