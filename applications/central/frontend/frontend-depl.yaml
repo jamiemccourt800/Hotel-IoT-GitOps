@@ -34,3 +34,5 @@ spec:
               value: "hotel_01"
             - name: REACT_APP_ROOMID
               value: "101"
+            - name: REACT_APP_BOOKING_API_URL
+              value: "http://booking-api:3003"

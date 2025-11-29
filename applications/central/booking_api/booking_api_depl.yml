@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-api
+  labels:
+    app: booking-api
+spec:
+  # replicas: 2
+  selector:
+    matchLabels:
+      app: booking-api
+  template:
+    metadata:
+      labels:
+        app:  booking-api
+    spec:
+      containers:
+        - name : booking-api
+          image: booking-api
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 80
+          env:
+            - name: MONGO_USER
+              value: "admin"
+            - name: MONGO_PASS
+              value: "1Password"
+            - name: MONGO_HOST
+              value: "mongodb"
+            - name: MONGO_PORT
+              value: "27017"
+            - name: MONGO_DB
+              value: "hotel_db"
