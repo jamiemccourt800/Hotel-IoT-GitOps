@@ -8,9 +8,16 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: "prod.127.0.0.1.nip.io"
+    - host: frontend.prod.localhost
       http:
         paths:
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
           - path: /
             pathType: Prefix
             backend:
@@ -18,17 +25,3 @@ spec:
                 name: frontend-service
                 port:
                   number: 80
-          - path: /grafana(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: grafana
-                port:
-                  number: 3000
-          - path: /command(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: command
-                port:
-                  number: 5000

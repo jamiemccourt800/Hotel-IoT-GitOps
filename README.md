@@ -89,7 +89,7 @@ http://localhost:3001/
 
 
 ### Test environment
-Uses an ingress with frontend.test.localhost. \
+Uses an ingress with frontend.test.localhost
 ```bash
 kubectl apply -k environments/test/kustomization.yaml
 ```
@@ -97,12 +97,12 @@ kubectl apply -k environments/test/kustomization.yaml
 Access in broswer: 
 
 ```bash
-http://localhost
+http://frontend.test.localhost
 ```
 
 ### Production environment
 
-Uses ingress with host set to prod.127.0.0.1.nip.io
+Uses ingress with host set to frontend.prod.localhost
 
 ```bash
 k apply -k environments/prod/kustomization.yaml
@@ -110,12 +110,11 @@ k apply -k environments/prod/kustomization.yaml
 
 Access in browser: 
 ```bash
-https://frontend.prod.127.0.0.1.nip.io/
+http://frontend.test.localhost/
 ```
 
 Grafana:
 ```bash
-https://frontend.prod.127.0.0.1.nip.io/grafana
-
+https://frontend.prod.localhost/grafana
 ```
 

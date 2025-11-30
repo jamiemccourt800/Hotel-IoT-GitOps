@@ -1,7 +1,8 @@
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - ingress.yaml
+  - backend-ingress.yaml
+  - frontend-ingress.yaml
 
 patches:
   - path: grafana-env-patch.yml
@@ -15,7 +16,7 @@ images:
 
   - name: app-frontend
     newName: dkitdevops/app-frontend
-    newTag: v1.0
+    newTag: test
 
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt
@@ -36,3 +37,8 @@ images:
   - name: alert-agent
     newName: dkitdevops/hotel-alert-agent
     newTag: latest
+  
+  - name: booking-api
+    newName: dkitdevops/booking_api
+    newTag: v1.0
+  

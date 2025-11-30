@@ -10,18 +10,22 @@ resources:
   - command/command-svc.yaml
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
+  - frontend/frontend-configmap.yml
   - kafka/kafka.yaml
   - kafka/kafka-alias-svc.yaml
   - pvc-grafana.yaml
   - userdb/pvc-mongodb.yaml
   - userdb/userdb-depl.yaml
   - userdb/userdb-svc.yaml
+  - userdb/mongodb-secret.yml
   - pvc-victoria-metrics.yaml
   - grafana/grafana-depl.yaml
   - grafana/grafana-svc.yaml
   - grafana/grafana-dashboard-provider.yaml
   - grafana/grafana-ds.yaml
   - grafana/grafana-dashboards.yaml
+  - booking_api/booking_api_depl.yml
+  - booking_api/booking_api_svc.yml
 
 configMapGenerator:
   - name: telegraf-config
