@@ -18,6 +18,16 @@ spec:
         - name: alert-agent
           image: dkitdevops/hotel-alert-agent:latest
           imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - -f
+                - python
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
           envFrom:
             - configMapRef:
                 name: alert-agent-config

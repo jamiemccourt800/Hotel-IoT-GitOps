@@ -17,6 +17,16 @@ spec:
         - name: kafka-to-mqtt
           image: dkitdevops/hotel-kafka-to-mqtt:latest
           command: ["python", "kafka_to_mqtt.py"]
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - -f
+                - python
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             - name: KAFKA_BROKER
               value: "kafka.central.svc.cluster.local:9092"

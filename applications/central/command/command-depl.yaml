@@ -40,6 +40,14 @@ spec:
               cpu: "250m"
           ports:
             - containerPort: 5000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             - name: API_PORT
               value: "5000"

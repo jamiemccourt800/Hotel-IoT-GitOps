@@ -28,6 +28,14 @@ spec:
               cpu: "250m"
           ports:
             - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             - name: REACT_APP_COMMAND_SERVICE_URL
               value: "http://command:5000"

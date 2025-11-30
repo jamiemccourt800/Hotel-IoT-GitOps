@@ -16,6 +16,16 @@ spec:
       containers:
         - name: mqtt-to-kafka
           image: dkitdevops/hotel-mqtt-to-kafka:latest
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - -f
+                - python
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             - name: MQTT_BROKER
               value: "mosquitto.hotel.svc.cluster.local"
