@@ -8,6 +8,8 @@ This repository defines the **GitOps structure** for deploying all services usin
 ### Install ArgoCD
 ``` bash
 kubectl create namespace argocd
+
+
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 ### Make a port forward
@@ -22,8 +24,17 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
   ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 ```
 
-### Deploy Root App
+kubectl apply -n argocd -f argo-cd/argocd-cm.yaml
+
+### Deploy ArgoCD Apps
+First needs to install the CRDs using the declarative approach
+`kubectl apply -f argo-cd/crd-app.yaml -n argocd`
+
+Then deploy the root app
 `kubectl apply -f argo-cd/root-app.yaml -n argocd`
+
+Then deploy the infra apps like Prometheus, Grafana, etc.
+`kubectl apply -f argo-cd/infra-app.yaml -n argocd`
 
 if the root-app set before argocd-cm, you may need restart the argocd-server pod
 `kubectl rollout restart -n argocd deployment argocd-repo-server` 
@@ -42,11 +53,12 @@ kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
+## Minikube Ingress
+ minikube addons enable ingress
+ minikube tunnel
+
 ## Kafka
-helm repo add confluentinc https://packages.confluent.io/helm
-helm repo update
-helm upgrade --install confluent-operator confluentinc/confluent-for-kubernetes --namespace central
-kubectl apply -f .\applications\central\kafka\ -n central
+kubectl apply -f https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.44.0/strimzi-crds-0.44.0.yaml
 
 ## Starting Frontend
 
@@ -77,7 +89,7 @@ http://localhost:3001/
 
 
 ### Test environment
-Uses an ingress with frontend.test.localhost. \
+Uses an ingress with frontend.test.localhost
 ```bash
 kubectl apply -k environments/test/kustomization.yaml
 ```
@@ -85,12 +97,12 @@ kubectl apply -k environments/test/kustomization.yaml
 Access in broswer: 
 
 ```bash
-http://localhost
+http://frontend.test.localhost
 ```
 
 ### Production environment
 
-Uses ingress with host set to prod.127.0.0.1.nip.io
+Uses ingress with host set to frontend.prod.localhost
 
 ```bash
 k apply -k environments/prod/kustomization.yaml
@@ -98,11 +110,11 @@ k apply -k environments/prod/kustomization.yaml
 
 Access in browser: 
 ```bash
-https://prod.127.0.0.1.nip.io/
+http://frontend.test.localhost/
 ```
 
 Grafana:
 ```bash
-https://prod.127.0.0.1.nip.io/grafana
+https://frontend.prod.localhost/grafana
 ```
 

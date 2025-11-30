@@ -16,30 +16,15 @@ spec:
     spec:
       containers:
         - name: temperature-sensor
-          image: temperature-sensor:latest
+          image: dkitdevops/hotel-temperature-sensor:latest
           imagePullPolicy: Always
-          env:
-            - name: HOTEL_ID
-              value: "hotel_01"
-            - name: ROOM
-              value: "101"
-            - name: SENSOR
-              value: "temperature-sensor"
-            - name: BROKER
-              value: "mosquitto.hotel.svc.cluster.local"
-            - name: BROKER_PORT
-              value: "1883"
-            - name: TARGET_TEMP
-              value: "23.5"
-            - name: START_TEMP
-              value: "23.5"
-            - name: MODE
-              value: "random"
-            - name: INTERVAL
-              value: "1.0"
-            - name: SPEED
-              value: "1.0"
-            - name: QOS
-              value: "1"
-            - name: KEEPALIVE
-              value: "60"
+          envFrom:
+            - configMapRef:
+                name: temperature-sensor-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

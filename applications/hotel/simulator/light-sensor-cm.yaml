@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: light-sensor-config
+  labels:
+    app: light-sensor
+data:
+  HOTEL_ID: "hotel_01"
+  ROOM: "101"
+  SENSOR: "light-sensor"
+  MQTT_BROKER: "mosquitto.hotel.svc.cluster.local"
+  MQTT_PORT: "1883"
+  QOS: "1"
+  KEEPALIVE: "60"
+  INTERVAL: "1.0"
+  SPEED: "1.0"

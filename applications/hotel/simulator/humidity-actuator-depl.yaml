@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: humidity-actuator
+  labels:
+    app: humidity-actuator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: humidity-actuator
+  template:
+    metadata:
+      labels:
+        app: humidity-actuator
+    spec:
+      containers:
+        - name: humidity-actuator
+          image: dkitdevops/hotel-humidity-actuator:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: humidity-actuator-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

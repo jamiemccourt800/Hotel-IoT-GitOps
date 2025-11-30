@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: light-sensor
+  labels:
+    app: light-sensor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: light-sensor
+  template:
+    metadata:
+      labels:
+        app: light-sensor
+    spec:
+      containers:
+        - name: light-sensor
+          image: dkitdevops/hotel-light-sensor:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: light-sensor-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

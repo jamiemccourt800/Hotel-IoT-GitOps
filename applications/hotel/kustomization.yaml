@@ -18,10 +18,28 @@ resources:
   - Kafka-MQTT/kafka-mqtt-svc.yaml
   
   # Simulator Components
+  # ConfigMaps
+  - simulator/temperature-sensor-cm.yaml
+  - simulator/temperature-actuator-cm.yaml
+  - simulator/light-sensor-cm.yaml
+  - simulator/light-actuator-cm.yaml
+  - simulator/humidity-sensor-cm.yaml
+  - simulator/humidity-actuator-cm.yaml
+  - simulator/alert-agent-cm.yaml
+  
+  # Deployments and Services
   - simulator/temperature-sensor-depl.yaml
   - simulator/temperature-sensor-svc.yaml
+  - simulator/temperature-actuator-depl.yaml
+  - simulator/temperature-actuator-svc.yaml
+  - simulator/light-sensor-depl.yaml
+  - simulator/light-sensor-svc.yaml
   - simulator/light-actuator-depl.yaml
   - simulator/light-actuator-svc.yaml
+  - simulator/humidity-sensor-depl.yaml
+  - simulator/humidity-sensor-svc.yaml
+  - simulator/humidity-actuator-depl.yaml
+  - simulator/humidity-actuator-svc.yaml
   - simulator/alert-agent-depl.yaml
   - simulator/alert-agent-svc.yaml
   
