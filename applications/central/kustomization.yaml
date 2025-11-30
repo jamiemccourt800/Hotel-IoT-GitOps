@@ -9,6 +9,7 @@ resources:
   - command/command-svc.yaml
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
+  - frontend/frontend-configmap.yml
   - kafka/kafka.yaml
   - kafka/kafka-alias-svc.yaml
   - pvc-grafana.yaml

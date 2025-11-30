@@ -9,6 +9,8 @@ spec:
         - name: grafana
           env:
             - name: GF_SERVER_ROOT_URL
-              value: "http://test.localhost/grafana"
+              value: "/grafana"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
               value: "true"
+            - name: GF_SECURITY_ALLOW_EMBEDDING
+              value: "true" 

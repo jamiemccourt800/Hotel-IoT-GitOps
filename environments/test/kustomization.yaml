@@ -1,7 +1,8 @@
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - ingress.yaml
+  - backend-ingress.yaml
+  - frontend-ingress.yaml
 
 patches:
   - path: grafana-env-patch.yml
@@ -15,7 +16,7 @@ images:
 
   - name: app-frontend
     newName: dkitdevops/app-frontend
-    newTag: v1.1
+    newTag: test
 
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt

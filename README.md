@@ -98,11 +98,11 @@ k apply -k environments/prod/kustomization.yaml
 
 Access in browser: 
 ```bash
-https://frontend.prod.127.0.0.1.nip.io/
+https://prod.127.0.0.1.nip.io/
 ```
 
 Grafana:
 ```bash
-https://frontend.prod.127.0.0.1.nip.io/grafana
+https://prod.127.0.0.1.nip.io/grafana
 ```
 
