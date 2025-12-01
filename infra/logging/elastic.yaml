@@ -8,10 +8,20 @@ spec:
     tls:
       selfSignedCertificate:
         disabled: true
-  version: 8.14.3
 
+  version: 8.19.7
   nodeSets:
   - name: default
     count: 1
     config:
       node.store.allow_mmap: false
+    podTemplate:
+      spec:
+        containers:
+          - name: elasticsearch
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 1Gi

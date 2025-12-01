@@ -12,7 +12,6 @@ data:
         Name tail
         Path /var/log/containers/*.log
         Tag kube.*
-        Parser docker
         Mem_Buf_Limit 10MB
         Skip_Long_Lines On
 
@@ -38,7 +37,7 @@ data:
         Host quickstart-es-http.logging.svc.cluster.local
         Port 9200
         HTTP_User elastic
-        HTTP_Passwd 73NPh5nh3T0HI371v8H4katL
+        HTTP_Passwd ${ELASTIC_PASSWORD}
         Index fluent-bit
         Suppress_Type_Name On
         Include_Tag_Key On
@@ -47,7 +46,7 @@ data:
     [PARSER]
         Name parser
         Format regex
-        Regex ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<logger>[^ ]+) - (?<level>[A-Z]+) - (?<message>.*)$
+        Regex ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<service>[^ ]+) - (?<level>[A-Z]+) - (?<message>.*)$
         Time_Key time
         Time_Format %Y-%m-%d %H:%M:%S,%L
         Time_Keep On

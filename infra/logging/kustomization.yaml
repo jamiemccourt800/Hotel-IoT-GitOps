@@ -3,13 +3,20 @@ kind: Kustomization
 
 namespace: logging
 
-helmCharts:
-  - name: kube-prometheus-stack
-    repo: https://prometheus-community.github.io/helm-charts
-    version: 65.3.1
-    releaseName: kube-prometheus-stack
-    namespace: monitoring
-    valuesFile: values-kube-prometheus-stack.yaml
-
 resources:
-  - namespace.yaml
+  - logging-namespace.yaml
+  - fluent-bit-role-binding.yaml
+  - fluent-bit-role.yaml
+  - fluent-bit-service-account.yaml
+  - fluent-bit-configmap.yaml
+  - fluent-bit-ds.yaml
+  - elastic.yaml
+  - kibana.yaml
+
+helmCharts:
+  - name: eck-operator
+    repo: https://helm.elastic.co
+    version: 3.2.0
+    releaseName: eck-operator
+    valuesInline:
+      installCRDs: false

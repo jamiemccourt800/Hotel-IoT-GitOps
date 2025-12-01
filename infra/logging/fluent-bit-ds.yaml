@@ -24,6 +24,12 @@ spec:
     spec:
       containers:
       - name: fluent-bit
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: quickstart-es-elastic-user
+                key: elastic
         image: fluent/fluent-bit:3.1.4-debug
         imagePullPolicy: Always
         ports:
