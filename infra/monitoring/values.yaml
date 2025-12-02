@@ -1,0 +1,48 @@
+# Enable/disable major components
+defaultRules:
+  create: true
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 1
+
+prometheus:
+  enabled: true
+  service:
+    type: ClusterIP
+  # Allow discovering all ServiceMonitors/PodMonitors in the same namespace by default
+  prometheusSpec:
+    replicas: 1
+    retention: 15d
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    storageSpec: null   # No persistence by default in base; set in prod overlay
+
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin         # dev only. In prod, use existingSecret or override via overlay
+  service:
+    type: ClusterIP
+  defaultDashboardsEnabled: true
+  defaultDashboardsTimezone: browser
+  persistence:
+    enabled: false
+  # Optionally expose via Ingress in overlays
+  ingress:
+    enabled: false
+
+# Common scrape targets that ship with the stack
+prometheusOperator:
+  enabled: true

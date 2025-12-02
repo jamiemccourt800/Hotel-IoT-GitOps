@@ -21,6 +21,20 @@ spec:
           image: eclipse-mosquitto:latest
           ports:
             - containerPort: 1883
+          livenessProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           volumeMounts:
             - name: mosquitto-config
               mountPath: /mosquitto/config

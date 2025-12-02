@@ -20,6 +20,20 @@ spec:
           image: mongo:4.4
           ports:
             - containerPort: 27017
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
