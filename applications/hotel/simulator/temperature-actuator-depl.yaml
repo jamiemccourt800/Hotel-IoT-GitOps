@@ -18,6 +18,16 @@ spec:
         - name: temperature-actuator
           image: dkitdevops/hotel-temperature-actuator:latest
           imagePullPolicy: Always
+          readinessProbe:
+            exec:
+              command:
+                - pgrep
+                - -f
+                - python
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           envFrom:
             - configMapRef:
                 name: temperature-actuator-config
