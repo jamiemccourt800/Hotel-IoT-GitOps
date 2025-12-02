@@ -9,7 +9,7 @@ images:
 
   - name: app-frontend
     newName: dkitdevops/app-frontend
-    newTag: v1.1
+    newTag: test
 
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt
