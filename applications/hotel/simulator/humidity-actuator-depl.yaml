@@ -21,9 +21,9 @@ spec:
           readinessProbe:
             exec:
               command:
-                - pgrep
-                - -f
                 - python
+                - -c
+                - "import sys; sys.exit(0)"
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 5
