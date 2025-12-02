@@ -26,9 +26,44 @@ data:
 
     [FILTER]
         Name parser
-        Match kube.var.log.containers.{(upload|videos|auth|view|comments)}-depl-*.log        
+        Match kube.var.log.containers.command-*.log        
         Key_Name log
-        Parser parser
+        Parser python_services
+        Reserve_Data On
+
+    [FILTER]
+        Name parser
+        Match kube.var.log.containers.vm-victoria-metrics-cluster-vmstorage-*.log        
+        Key_Name log
+        Parser vm
+        Reserve_Data On
+    
+    [FILTER]
+        Name parser
+        Match kube.var.log.containers.my-release-telegraf-*.log        
+        Key_Name log
+        Parser telegraf
+        Reserve_Data On
+
+    [FILTER]
+        Name parser
+        Match kube.var.log.containers.strimzi-cluster-operator-*.log        
+        Key_Name log
+        Parser strimzi
+        Reserve_Data On
+    
+    [FILTER]
+        Name parser
+        Match kube.var.log.containers.mongodb-*.log        
+        Key_Name log
+        Parser mongo
+        Reserve_Data On
+
+    [FILTER]
+        Name parser
+        Match kube.var.log.containers.frontend-*.log        
+        Key_Name log
+        Parser frontend
         Reserve_Data On
 
     [OUTPUT]
@@ -44,9 +79,47 @@ data:
 
   parsers.conf: |-
     [PARSER]
-        Name parser
+        Name python_services
         Format regex
         Regex ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<service>[^ ]+) - (?<level>[A-Z]+) - (?<message>.*)$
         Time_Key time
         Time_Format %Y-%m-%d %H:%M:%S,%L
+        Time_Keep On
+    
+    [PARSER]
+        Name vm
+        Format json
+        Time_Key ts
+        Time_Format %Y-%m-%d%H:%M:%S.%LZ
+        Time_Keep On
+
+    [PARSER]
+        Name telegraf
+        Format regex
+        Regex ^(?<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)\s+(?<level>[A-Z]!)\s+\[(?<component>[^\]]+)\]\s+(?<message>.*)$
+        Time_Key time
+        Time_Format %Y-%m-%d %H:%M:%S,%L
+        Time_Keep On
+
+    [PARSER]
+        Name strimzi
+        Format regex
+        Regex ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<service>[^ ]+) - (?<level>[A-Z]+) - (?<message>.*)$
+        Time_Key time
+        Time_Format %Y-%m-%d%H:%M:%S.%LZ
+        Time_Keep On
+
+    [PARSER]
+        Name frontend
+        Format regex
+        Regex ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - (?<service>[^ ]+) - (?<level>[A-Z]+) - (?<message>.*)$
+        Time_Key time
+        Time_Format %Y-%m-%d %H:%M:%S,%L
+        Time_Keep On
+                                                                     
+    [PARSER]
+        Name mongo
+        Format json
+        Time_Key t
+        Time_Format %Y-%m-%d%H:%M:%S.%LZ
         Time_Keep On
