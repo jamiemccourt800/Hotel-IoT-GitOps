@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://gitlab.comp.dkit.ie/D00271292/devops-project-gitops.git
-    targetRevision: logging
+    targetRevision: main
     path: infra
   destination:
     server: https://kubernetes.default.svc
