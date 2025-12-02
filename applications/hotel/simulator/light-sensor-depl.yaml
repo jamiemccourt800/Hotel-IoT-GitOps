@@ -18,6 +18,16 @@ spec:
         - name: light-sensor
           image: dkitdevops/hotel-light-sensor:latest
           imagePullPolicy: Always
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import sys; sys.exit(0)"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           envFrom:
             - configMapRef:
                 name: light-sensor-config
