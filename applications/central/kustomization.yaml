@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: central
 
 resources:
-  - strimzi/strimzi-crds-0.44.0.yaml
+  - namespace-central.yaml
   - telegraf/telegraf.yaml
   - command/command-depl.yaml
   - command/command-svc.yaml
