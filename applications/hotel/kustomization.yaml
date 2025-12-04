@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: hotel
 
 resources:
+  - namespace.yaml
   # MQTT Broker
   - MQTT/mosquitto-cm.yaml
   - MQTT/mosquitto-depl.yaml

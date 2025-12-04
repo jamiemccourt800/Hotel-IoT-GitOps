@@ -46,6 +46,11 @@ kubectl create namespace hotel
 ## Dev
 kubectl apply -k environments/prod
 
+## Monitoring
+Add the prometheus endpoint to grafana. 
+
+http://kube-prometheus-stack-prometheus.monitoring.svc:9090
+
 ## For kubernetes dashboard
 helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
 
