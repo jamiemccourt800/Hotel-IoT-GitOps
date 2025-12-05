@@ -4,8 +4,9 @@ kind: Kustomization
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - ./ingress.yaml
-  - ./backend-ingress.yaml
+  - ./gateway.yaml
+  - ./gateway-service.yaml
+  - ./gateway-config.yaml
 
 patches:
   - path: grafana-env-patch.yml
