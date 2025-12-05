@@ -4,8 +4,8 @@ kind: Kustomization
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - backend-ingress.yaml
-  - frontend-ingress.yaml
+  - ./ingress.yaml
+  - ./backend-ingress.yaml
 
 patches:
   - path: grafana-env-patch.yml
@@ -20,7 +20,7 @@ images:
 
   - name: app-frontend
     newName: dkitdevops/app-frontend
-    newTag: prod
+    newTag: v1.1
 
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt

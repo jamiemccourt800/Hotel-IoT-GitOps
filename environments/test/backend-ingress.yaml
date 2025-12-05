@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  namespace: central
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: api.test.localhost
+      http:
+        paths:
+          - path: /booking-api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: booking-api-service
+                port:
+                  number: 8000
+          - path: /command
+            pathType: Prefix
+            backend:
+              service:
+                name: command
+                port:
+                  number: 5000
