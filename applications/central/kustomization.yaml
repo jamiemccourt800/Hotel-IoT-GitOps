@@ -26,6 +26,7 @@ resources:
   - grafana/grafana-dashboards.yaml
   - booking_api/booking_api_depl.yml
   - booking_api/booking_api_svc.yml
+  
 
 configMapGenerator:
   - name: telegraf-config
