@@ -72,7 +72,7 @@ helmCharts:
   - name: strimzi-kafka-operator
     repo: https://strimzi.io/charts/
     releaseName: strimzi
-    version: 0.44.0
+    version: 0.49.0
     namespace: central
     valuesInline:
       watchAnyNamespace: false
