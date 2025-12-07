@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Hotels - Hotel Manager{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>All Hotels</h2>
+    <a href="{{ url_for('create_hotel') }}" class="btn btn-primary">➕ Create New Hotel</a>
+</div>
+
+{% if hotels %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+        {% for hotel in hotels %}
+        <div class="card">
+            <h3 style="color: #667eea;">🏨 {{ hotel.spec.hotelId }}</h3>
+            <p style="color: #6c757d; margin-bottom: 15px;">📍 {{ hotel.spec.location }}</p>
+            
+            <div style="margin-bottom: 15px;">
+                {% if hotel.status_info.status == 'Running' %}
+                    <span class="badge badge-success">✓ Running</span>
+                {% elif hotel.status_info.status == 'Partial' %}
+                    <span class="badge badge-warning">⚠ Partial</span>
+                {% else %}
+                    <span class="badge badge-info">○ Not Deployed</span>
+                {% endif %}
+            </div>
+            
+            <div style="margin-bottom: 15px; color: #495057;">
+                <p><strong>Replicas:</strong> {{ hotel.spec.replicas }}</p>
+                <p><strong>Rooms:</strong> {{ hotel.room_count }}</p>
+                <p><strong>Pods:</strong> {{ hotel.status_info.running_pods }}/{{ hotel.status_info.total_pods }}</p>
+                <p><strong>Namespace:</strong> {{ hotel.metadata.namespace }}</p>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <a href="{{ url_for('view_hotel', name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}" 
+                   class="btn btn-primary" style="flex: 1; text-align: center;">View Details</a>
+                
+                <form method="POST" action="{{ url_for('delete_hotel', name=hotel.metadata.name) }}" 
+                      onsubmit="return confirm('Are you sure you want to delete {{ hotel.spec.hotelId }}?');" 
+                      style="flex: 1;">
+                    <input type="hidden" name="namespace" value="{{ hotel.metadata.namespace }}">
+                    <button type="submit" class="btn btn-danger" style="width: 100%;">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 60px;">
+        <h3 style="color: #6c757d; margin-bottom: 20px;">No hotels found</h3>
+        <p style="color: #6c757d; margin-bottom: 30px;">Get started by creating your first hotel</p>
+        <a href="{{ url_for('create_hotel') }}" class="btn btn-primary">➕ Create Hotel</a>
+    </div>
+{% endif %}
+{% endblock %}

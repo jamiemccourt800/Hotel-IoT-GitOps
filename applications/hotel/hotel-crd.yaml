@@ -1,0 +1,163 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: hotels.platform.devops.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+spec:
+  group: platform.devops.io
+  names:
+    kind: Hotel
+    listKind: HotelList
+    plural: hotels
+    singular: hotel
+    shortNames:
+      - htl
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - hotelId
+                - location
+              properties:
+                hotelId:
+                  type: string
+                  description: "Unique identifier for the hotel"
+                  pattern: '^hotel[0-9]+$'
+                location:
+                  type: string
+                  description: "Physical location of the hotel"
+                  minLength: 1
+                replicas:
+                  type: integer
+                  description: "Number of hotel instance replicas"
+                  minimum: 1
+                  maximum: 10
+                  default: 1
+                mqtt:
+                  type: object
+                  description: "MQTT broker configuration for the hotel"
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    port:
+                      type: integer
+                      default: 1883
+                    websocketPort:
+                      type: integer
+                      default: 9001
+                    resources:
+                      type: object
+                      properties:
+                        requests:
+                          type: object
+                          properties:
+                            memory:
+                              type: string
+                              default: "64Mi"
+                            cpu:
+                              type: string
+                              default: "100m"
+                        limits:
+                          type: object
+                          properties:
+                            memory:
+                              type: string
+                              default: "128Mi"
+                            cpu:
+                              type: string
+                              default: "200m"
+                kafka:
+                  type: object
+                  description: "Kafka integration configuration"
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    bootstrapServers:
+                      type: string
+                      default: "kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+                    topic:
+                      type: string
+                      description: "Kafka topic for hotel messages"
+                rooms:
+                  type: array
+                  description: "List of rooms in this hotel"
+                  items:
+                    type: object
+                    required:
+                      - roomId
+                    properties:
+                      roomId:
+                        type: string
+                        pattern: '^room[0-9]+$'
+                      enabled:
+                        type: boolean
+                        default: true
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  description: "Current phase of the hotel (Pending, Running, Failed)"
+                  enum:
+                    - Pending
+                    - Running
+                    - Failed
+                    - Scaling
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                      reason:
+                        type: string
+                      message:
+                        type: string
+                observedGeneration:
+                  type: integer
+                readyReplicas:
+                  type: integer
+                activeRooms:
+                  type: integer
+                  description: "Number of active rooms in the hotel"
+      subresources:
+        status: {}
+        scale:
+          specReplicasPath: .spec.replicas
+          statusReplicasPath: .status.readyReplicas
+      additionalPrinterColumns:
+        - name: Hotel ID
+          type: string
+          jsonPath: .spec.hotelId
+        - name: Location
+          type: string
+          jsonPath: .spec.location
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Active Rooms
+          type: integer
+          jsonPath: .status.activeRooms
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

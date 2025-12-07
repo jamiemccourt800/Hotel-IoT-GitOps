@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hotel-manager-testing
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+  labels:
+    app.kubernetes.io/name: hotel-manager
+    app.kubernetes.io/component: web-ui
+    environment: testing
+spec:
+  project: default
+  
+  source:
+    repoURL: https://github.com/YOUR-ORG/devops-project-gitops.git
+    targetRevision: HEAD
+    path: applications/hotel-manager/overlays/testing
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=false
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  
+  # Health check configuration
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas

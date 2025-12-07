@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}{{ hotel.spec.hotelId }} - Hotel Manager{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('list_hotels') }}" style="color: #667eea; text-decoration: none;">← Back to Hotels</a>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+            <h2 style="color: #667eea; margin-bottom: 10px;">🏨 {{ hotel.spec.hotelId }}</h2>
+            <p style="color: #6c757d; font-size: 1.1rem;">📍 {{ hotel.spec.location }}</p>
+        </div>
+        <div>
+            {% if status_info.status == 'Running' %}
+                <span class="badge badge-success" style="font-size: 1rem; padding: 8px 16px;">✓ Running</span>
+            {% elif status_info.status == 'Partial' %}
+                <span class="badge badge-warning" style="font-size: 1rem; padding: 8px 16px;">⚠ Partial</span>
+            {% else %}
+                <span class="badge badge-info" style="font-size: 1rem; padding: 8px 16px;">○ Not Deployed</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h4 style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Replicas</h4>
+        <p style="font-size: 2rem; font-weight: bold;">{{ hotel.spec.replicas }}</p>
+    </div>
+    
+    <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <h4 style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Rooms</h4>
+        <p style="font-size: 2rem; font-weight: bold;">{{ rooms|length }}</p>
+    </div>
+    
+    <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+        <h4 style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Running Pods</h4>
+        <p style="font-size: 2rem; font-weight: bold;">{{ status_info.running_pods }}</p>
+    </div>
+    
+    <div class="card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+        <h4 style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Total Pods</h4>
+        <p style="font-size: 2rem; font-weight: bold;">{{ status_info.total_pods }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Hotel Configuration</h3>
+    <table>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td><strong>Hotel ID</strong></td>
+            <td>{{ hotel.spec.hotelId }}</td>
+        </tr>
+        <tr>
+            <td><strong>Location</strong></td>
+            <td>{{ hotel.spec.location }}</td>
+        </tr>
+        <tr>
+            <td><strong>Namespace</strong></td>
+            <td>{{ hotel.metadata.namespace }}</td>
+        </tr>
+        <tr>
+            <td><strong>Replicas</strong></td>
+            <td>{{ hotel.spec.replicas }}</td>
+        </tr>
+        <tr>
+            <td><strong>MQTT Enabled</strong></td>
+            <td>{{ '✓ Yes' if hotel.spec.mqtt.enabled else '✗ No' }}</td>
+        </tr>
+        <tr>
+            <td><strong>MQTT Port</strong></td>
+            <td>{{ hotel.spec.mqtt.port }}</td>
+        </tr>
+        <tr>
+            <td><strong>Kafka Enabled</strong></td>
+            <td>{{ '✓ Yes' if hotel.spec.kafka.enabled else '✗ No' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Kafka Servers</strong></td>
+            <td>{{ hotel.spec.kafka.bootstrapServers }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3>Rooms ({{ rooms|length }})</h3>
+        <a href="{{ url_for('create_room', hotel_name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}" 
+           class="btn btn-success">➕ Add Room</a>
+    </div>
+    
+    {% if rooms %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Room ID</th>
+                    <th>Replicas</th>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Light</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <td><strong>{{ room.spec.roomId }}</strong></td>
+                    <td>{{ room.spec.replicas }}</td>
+                    <td>
+                        {% if room.spec.sensors.temperature.enabled %}
+                            <span class="badge badge-success">✓ {{ room.spec.sensors.temperature.minValue }}°-{{ room.spec.sensors.temperature.maxValue }}°</span>
+                        {% else %}
+                            <span class="badge badge-danger">✗ Disabled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if room.spec.sensors.humidity.enabled %}
+                            <span class="badge badge-success">✓ {{ room.spec.sensors.humidity.minValue }}%-{{ room.spec.sensors.humidity.maxValue }}%</span>
+                        {% else %}
+                            <span class="badge badge-danger">✗ Disabled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if room.spec.sensors.light.enabled %}
+                            <span class="badge badge-success">✓ Enabled</span>
+                        {% else %}
+                            <span class="badge badge-danger">✗ Disabled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_room', room_name=room.metadata.name) }}" 
+                              onsubmit="return confirm('Are you sure you want to delete {{ room.spec.roomId }}?');">
+                            <input type="hidden" name="namespace" value="{{ room.metadata.namespace }}">
+                            <input type="hidden" name="hotel_name" value="{{ hotel.metadata.name }}">
+                            <input type="hidden" name="hotel_namespace" value="{{ hotel.metadata.namespace }}">
+                            <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.875rem;">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; padding: 40px; color: #6c757d;">
+            No rooms configured. <a href="{{ url_for('create_room', hotel_name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}">Add your first room</a>
+        </p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3 style="color: #dc3545;">Danger Zone</h3>
+    <p style="color: #6c757d; margin-bottom: 15px;">Deleting this hotel will remove all associated resources including rooms, deployments, and services.</p>
+    <form method="POST" action="{{ url_for('delete_hotel', name=hotel.metadata.name) }}" 
+          onsubmit="return confirm('Are you ABSOLUTELY sure you want to delete {{ hotel.spec.hotelId }}? This action cannot be undone.');">
+        <input type="hidden" name="namespace" value="{{ hotel.metadata.namespace }}">
+        <button type="submit" class="btn btn-danger">Delete Hotel</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+---
+# Example Hotel Instance - Hotel 2
+apiVersion: platform.devops.io/v1alpha1
+kind: Hotel
+metadata:
+  name: hotel2-instance
+  namespace: default
+  labels:
+    platform.devops.io/managed-by: manual
+spec:
+  hotelId: hotel2
+  location: "Dublin, Ireland"
+  replicas: 2
+  mqtt:
+    enabled: true
+    port: 1883
+    websocketPort: 9001
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "100m"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+  kafka:
+    enabled: true
+    bootstrapServers: "kafka.central.svc.cluster.local:9092"
+    topic: "hotel2-events"
+  rooms:
+    - roomId: room201
+      replicas: 1
+    - roomId: room202
+      replicas: 1
+    - roomId: room203
+      replicas: 1
+
+---
+# Example Hotel Instance - Hotel 3
+apiVersion: platform.devops.io/v1alpha1
+kind: Hotel
+metadata:
+  name: hotel3-instance
+  namespace: default
+  labels:
+    platform.devops.io/managed-by: manual
+spec:
+  hotelId: hotel3
+  location: "Cork, Ireland"
+  replicas: 1
+  mqtt:
+    enabled: true
+    port: 1883
+  kafka:
+    enabled: true
+    bootstrapServers: "kafka.central.svc.cluster.local:9092"
+    topic: "hotel3-events"
+  rooms:
+    - roomId: room301
+      replicas: 1
+    - roomId: room302
+      replicas: 1

@@ -1,0 +1,351 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: rooms.platform.devops.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+spec:
+  group: platform.devops.io
+  names:
+    kind: Room
+    listKind: RoomList
+    plural: rooms
+    singular: room
+    shortNames:
+      - rm
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - roomId
+                - hotelId
+              properties:
+                roomId:
+                  type: string
+                  description: "Unique identifier for the room"
+                  pattern: '^room[0-9]+$'
+                hotelId:
+                  type: string
+                  description: "Hotel this room belongs to"
+                  pattern: '^hotel[0-9]+$'
+                replicas:
+                  type: integer
+                  description: "Number of room simulator replicas"
+                  minimum: 0
+                  maximum: 5
+                  default: 1
+                sensors:
+                  type: object
+                  description: "Sensor configuration for the room"
+                  properties:
+                    temperature:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: true
+                        minValue:
+                          type: number
+                          default: 18.0
+                        maxValue:
+                          type: number
+                          default: 26.0
+                        interval:
+                          type: integer
+                          description: "Reading interval in seconds"
+                          default: 5
+                        resources:
+                          type: object
+                          properties:
+                            requests:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "64Mi"
+                                cpu:
+                                  type: string
+                                  default: "100m"
+                            limits:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "128Mi"
+                                cpu:
+                                  type: string
+                                  default: "200m"
+                    humidity:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: true
+                        minValue:
+                          type: number
+                          default: 30.0
+                        maxValue:
+                          type: number
+                          default: 70.0
+                        interval:
+                          type: integer
+                          default: 5
+                        resources:
+                          type: object
+                          properties:
+                            requests:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "64Mi"
+                                cpu:
+                                  type: string
+                                  default: "100m"
+                            limits:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "128Mi"
+                                cpu:
+                                  type: string
+                                  default: "200m"
+                    light:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: true
+                        interval:
+                          type: integer
+                          default: 5
+                        resources:
+                          type: object
+                          properties:
+                            requests:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "64Mi"
+                                cpu:
+                                  type: string
+                                  default: "100m"
+                            limits:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "128Mi"
+                                cpu:
+                                  type: string
+                                  default: "200m"
+                actuators:
+                  type: object
+                  description: "Actuator configuration for the room"
+                  properties:
+                    temperature:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: true
+                        resources:
+                          type: object
+                          properties:
+                            requests:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "64Mi"
+                                cpu:
+                                  type: string
+                                  default: "100m"
+                            limits:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "128Mi"
+                                cpu:
+                                  type: string
+                                  default: "200m"
+                    humidity:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: true
+                        resources:
+                          type: object
+                          properties:
+                            requests:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "64Mi"
+                                cpu:
+                                  type: string
+                                  default: "100m"
+                            limits:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "128Mi"
+                                cpu:
+                                  type: string
+                                  default: "200m"
+                    light:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: true
+                        resources:
+                          type: object
+                          properties:
+                            requests:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "64Mi"
+                                cpu:
+                                  type: string
+                                  default: "100m"
+                            limits:
+                              type: object
+                              properties:
+                                memory:
+                                  type: string
+                                  default: "128Mi"
+                                cpu:
+                                  type: string
+                                  default: "200m"
+                alertAgent:
+                  type: object
+                  description: "Alert agent configuration"
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    resources:
+                      type: object
+                      properties:
+                        requests:
+                          type: object
+                          properties:
+                            memory:
+                              type: string
+                              default: "64Mi"
+                            cpu:
+                              type: string
+                              default: "100m"
+                        limits:
+                          type: object
+                          properties:
+                            memory:
+                              type: string
+                              default: "128Mi"
+                            cpu:
+                              type: string
+                              default: "200m"
+                mqtt:
+                  type: object
+                  description: "MQTT configuration for room communication"
+                  properties:
+                    broker:
+                      type: string
+                      description: "MQTT broker address"
+                    port:
+                      type: integer
+                      default: 1883
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  description: "Current phase of the room (Pending, Running, Failed)"
+                  enum:
+                    - Pending
+                    - Running
+                    - Failed
+                    - Scaling
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                      reason:
+                        type: string
+                      message:
+                        type: string
+                observedGeneration:
+                  type: integer
+                readyReplicas:
+                  type: integer
+                activeSensors:
+                  type: integer
+                  description: "Number of active sensors in the room"
+                activeActuators:
+                  type: integer
+                  description: "Number of active actuators in the room"
+                currentTemperature:
+                  type: number
+                  description: "Latest temperature reading"
+                currentHumidity:
+                  type: number
+                  description: "Latest humidity reading"
+                lightStatus:
+                  type: string
+                  description: "Current light status (on/off)"
+                  enum:
+                    - "on"
+                    - "off"
+                    - "unknown"
+      subresources:
+        status: {}
+        scale:
+          specReplicasPath: .spec.replicas
+          statusReplicasPath: .status.readyReplicas
+      additionalPrinterColumns:
+        - name: Room ID
+          type: string
+          jsonPath: .spec.roomId
+        - name: Hotel
+          type: string
+          jsonPath: .spec.hotelId
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Temperature
+          type: number
+          jsonPath: .status.currentTemperature
+        - name: Humidity
+          type: number
+          jsonPath: .status.currentHumidity
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

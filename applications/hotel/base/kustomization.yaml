@@ -1,0 +1,137 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Variables that can be overridden per hotel instance
+vars:
+  - name: HOTEL_NAMESPACE
+    objref:
+      kind: Namespace
+      name: hotel
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
+
+# Common labels for all resources
+commonLabels:
+  platform.devops.io/managed-by: hotel-operator
+
+resources:
+  # MQTT Broker
+  - mqtt/mosquitto-cm.yaml
+  - mqtt/mosquitto-depl.yaml
+  - mqtt/mosquitto-svc.yaml
+  - pvc-mosquitto.yaml
+  
+  # MQTT to Kafka Bridge (sensor data to central)
+  - mqtt-kafka/mqtt-kafka-depl.yaml
+  - mqtt-kafka/mqtt-kafka-svc.yaml
+  
+  # Kafka to MQTT Bridge (commands from central)
+  - kafka-mqtt/kafka-mqtt-depl.yaml
+  - kafka-mqtt/kafka-mqtt-svc.yaml
+  
+  # Simulator Components
+  # ConfigMaps
+  - simulator/temperature-sensor-cm.yaml
+  - simulator/temperature-actuator-cm.yaml
+  - simulator/light-sensor-cm.yaml
+  - simulator/light-actuator-cm.yaml
+  - simulator/humidity-sensor-cm.yaml
+  - simulator/humidity-actuator-cm.yaml
+  - simulator/alert-agent-cm.yaml
+  
+  # Deployments and Services
+  - simulator/temperature-sensor-depl.yaml
+  - simulator/temperature-sensor-svc.yaml
+  - simulator/temperature-actuator-depl.yaml
+  - simulator/temperature-actuator-svc.yaml
+  - simulator/light-sensor-depl.yaml
+  - simulator/light-sensor-svc.yaml
+  - simulator/light-actuator-depl.yaml
+  - simulator/light-actuator-svc.yaml
+  - simulator/humidity-sensor-depl.yaml
+  - simulator/humidity-sensor-svc.yaml
+  - simulator/humidity-actuator-depl.yaml
+  - simulator/humidity-actuator-svc.yaml
+  - simulator/alert-agent-depl.yaml
+  - simulator/alert-agent-svc.yaml
+
+# Replacements for dynamic values
+replacements:
+  # Namespace replacement
+  - source:
+      kind: ConfigMap
+      name: hotel-config
+      fieldPath: data.namespace
+    targets:
+      - select:
+          kind: Deployment
+        fieldPaths:
+          - metadata.namespace
+          - spec.template.metadata.namespace
+      - select:
+          kind: Service
+        fieldPaths:
+          - metadata.namespace
+      - select:
+          kind: ConfigMap
+        fieldPaths:
+          - metadata.namespace
+      - select:
+          kind: PersistentVolumeClaim
+        fieldPaths:
+          - metadata.namespace
+
+  # Kafka broker replacement
+  - source:
+      kind: ConfigMap
+      name: hotel-config
+      fieldPath: data.kafkaBroker
+    targets:
+      - select:
+          kind: Deployment
+          name: mqtt-to-kafka
+        fieldPaths:
+          - spec.template.spec.containers.[name=mqtt-to-kafka].env.[name=KAFKA_BROKER].value
+      - select:
+          kind: Deployment
+          name: kafka-to-mqtt
+        fieldPaths:
+          - spec.template.spec.containers.[name=kafka-to-mqtt].env.[name=KAFKA_BROKER].value
+
+  # MQTT broker replacement
+  - source:
+      kind: ConfigMap
+      name: hotel-config
+      fieldPath: data.mqttBroker
+    targets:
+      - select:
+          kind: Deployment
+          name: mqtt-to-kafka
+        fieldPaths:
+          - spec.template.spec.containers.[name=mqtt-to-kafka].env.[name=MQTT_BROKER].value
+
+  # Hotel ID replacement
+  - source:
+      kind: ConfigMap
+      name: hotel-config
+      fieldPath: data.hotelId
+    targets:
+      - select:
+          kind: Deployment
+          name: kafka-to-mqtt
+        fieldPaths:
+          - spec.template.spec.containers.[name=kafka-to-mqtt].env.[name=KAFKA_GROUP].value
+        options:
+          delimiter: '-'
+          index: 0
+
+# ConfigMap generator for hotel-specific configuration
+configMapGenerator:
+  - name: hotel-config
+    literals:
+      - namespace=hotel
+      - hotelId=hotel1
+      - kafkaBroker=kafka.central.svc.cluster.local:9092
+      - mqttBroker=mosquitto.hotel.svc.cluster.local
+      - replicas=1

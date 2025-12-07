@@ -1,0 +1,134 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: hotel-instances
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  
+  generators:
+    # Use cluster decision resource generator to watch Hotel CRDs
+    # The operator will create ConfigMaps with hotel metadata
+    - clusterDecisionResource:
+        configMapRef: hotel-instance-list
+        labelSelector:
+          matchLabels:
+            platform.devops.io/resource-type: hotel-instance
+        requeueAfterSeconds: 60
+  
+  template:
+    metadata:
+      name: 'hotel-{{.hotelId}}'
+      labels:
+        app.kubernetes.io/name: hotel
+        app.kubernetes.io/instance: '{{.hotelId}}'
+        platform.devops.io/hotel-id: '{{.hotelId}}'
+      annotations:
+        argocd.argoproj.io/sync-wave: "10"
+    
+    spec:
+      project: default
+      
+      source:
+        repoURL: https://github.com/YOUR-ORG/devops-project-gitops.git
+        targetRevision: HEAD
+        path: applications/hotel/base
+        
+        kustomize:
+          # Override ConfigMap values based on Hotel CRD
+          patches:
+            - target:
+                kind: ConfigMap
+                name: hotel-config
+              patch: |-
+                - op: replace
+                  path: /data/namespace
+                  value: {{.namespace}}
+                - op: replace
+                  path: /data/hotelId
+                  value: {{.hotelId}}
+                - op: replace
+                  path: /data/kafkaBroker
+                  value: {{.kafkaBroker}}
+                - op: replace
+                  path: /data/mqttBroker
+                  value: mosquitto.{{.namespace}}.svc.cluster.local
+                - op: replace
+                  path: /data/replicas
+                  value: "{{.replicas}}"
+            
+            # Patch deployments with hotel-specific replicas
+            - target:
+                kind: Deployment
+                name: mosquitto
+              patch: |-
+                - op: replace
+                  path: /spec/replicas
+                  value: {{.replicas}}
+                - op: replace
+                  path: /metadata/namespace
+                  value: {{.namespace}}
+            
+            - target:
+                kind: Deployment
+                name: kafka-to-mqtt
+              patch: |-
+                - op: replace
+                  path: /spec/replicas
+                  value: {{.replicas}}
+                - op: replace
+                  path: /metadata/namespace
+                  value: {{.namespace}}
+                - op: replace
+                  path: /spec/template/spec/containers/0/env/0/value
+                  value: {{.kafkaBroker}}
+                - op: replace
+                  path: /spec/template/spec/containers/0/env/1/value
+                  value: {{.hotelId}}-bridge
+                - op: replace
+                  path: /spec/template/spec/containers/0/env/4/value
+                  value: mosquitto.{{.namespace}}.svc.cluster.local
+            
+            - target:
+                kind: Deployment
+                name: mqtt-to-kafka
+              patch: |-
+                - op: replace
+                  path: /spec/replicas
+                  value: {{.replicas}}
+                - op: replace
+                  path: /metadata/namespace
+                  value: {{.namespace}}
+                - op: replace
+                  path: /spec/template/spec/containers/0/env/0/value
+                  value: {{.kafkaBroker}}
+                - op: replace
+                  path: /spec/template/spec/containers/0/env/3/value
+                  value: mosquitto.{{.namespace}}.svc.cluster.local
+      
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.namespace}}'
+      
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+
+  # Template for sync policies
+  syncPolicy:
+    preserveResourcesOnDeletion: false

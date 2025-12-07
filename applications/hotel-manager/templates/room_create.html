@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Create Room - Hotel Manager{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('view_hotel', name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}" 
+       style="color: #667eea; text-decoration: none;">← Back to {{ hotel.spec.hotelId }}</a>
+</div>
+
+<div class="card">
+    <h2 style="margin-bottom: 20px;">Add Room to {{ hotel.spec.hotelId }}</h2>
+    <p style="color: #6c757d; margin-bottom: 30px;">📍 {{ hotel.spec.location }}</p>
+    
+    <form method="POST" action="{{ url_for('create_room', hotel_name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}">
+        <div class="form-group">
+            <label for="room_id">Room ID *</label>
+            <input type="text" id="room_id" name="room_id" required 
+                   pattern="^room[0-9]+$" 
+                   placeholder="e.g., room101, room102"
+                   title="Room ID must match pattern: room[number]">
+            <small style="color: #6c757d;">Must match pattern: room[number] (e.g., room101, room102)</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="replicas">Replicas *</label>
+            <input type="number" id="replicas" name="replicas" value="1" min="0" max="5" required>
+            <small style="color: #6c757d;">Number of room simulator replicas (0-5)</small>
+        </div>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #dee2e6;">
+        
+        <h3 style="margin-bottom: 20px;">Sensor Configuration</h3>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="margin-bottom: 15px;">🌡️ Temperature Sensor</h4>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="temp_enabled" checked>
+                    <span>Enable Temperature Sensor</span>
+                </label>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="temp_min">Min Temperature (°C)</label>
+                    <input type="number" id="temp_min" name="temp_min" value="18.0" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="temp_max">Max Temperature (°C)</label>
+                    <input type="number" id="temp_max" name="temp_max" value="26.0" step="0.1">
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="margin-bottom: 15px;">💧 Humidity Sensor</h4>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="humidity_enabled" checked>
+                    <span>Enable Humidity Sensor</span>
+                </label>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="humidity_min">Min Humidity (%)</label>
+                    <input type="number" id="humidity_min" name="humidity_min" value="30.0" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="humidity_max">Max Humidity (%)</label>
+                    <input type="number" id="humidity_max" name="humidity_max" value="70.0" step="0.1">
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="margin-bottom: 15px;">💡 Light Sensor</h4>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="light_enabled" checked>
+                    <span>Enable Light Sensor</span>
+                </label>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <button type="submit" class="btn btn-success">Add Room</button>
+            <a href="{{ url_for('view_hotel', name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}" 
+               class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<div class="card" style="background: #f8f9fa;">
+    <h3 style="margin-bottom: 15px;">ℹ️ What happens when you create a room?</h3>
+    <ul style="color: #495057; line-height: 1.8;">
+        <li>A Room CRD will be created in the hotel's namespace</li>
+        <li>The hotel operator will detect the new Room CRD</li>
+        <li>Room simulator deployments will be created</li>
+        <li>Sensors will start publishing data to MQTT topics</li>
+        <li>Actuators will subscribe to control commands</li>
+        <li>Data will flow through Kafka to the central system</li>
+    </ul>
+</div>
+{% endblock %}

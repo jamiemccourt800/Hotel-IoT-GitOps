@@ -1,48 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# This is now a legacy/static hotel configuration
+# For dynamic hotel instances, use the ApplicationSet with hotel-operator
+
 namespace: hotel
 
 resources:
   - namespace.yaml
-  # MQTT Broker
-  - MQTT/mosquitto-cm.yaml
-  - MQTT/mosquitto-depl.yaml
-  - MQTT/mosquitto-svc.yaml
   
-  # MQTT to Kafka Bridge (sensor data to central)
-  - MQTT-Kafka/mqtt-kafka-depl.yaml
-  - MQTT-Kafka/mqtt-kafka-svc.yaml
+  # Platform Engineering CRDs for hotel and room scaling
+  - hotel-crd.yaml
+  - room-crd.yaml
   
-  # Kafka to MQTT Bridge (commands from central)
-  - Kafka-MQTT/kafka-mqtt-depl.yaml
-  - Kafka-MQTT/kafka-mqtt-svc.yaml
-  
-  # Simulator Components
-  # ConfigMaps
-  - simulator/temperature-sensor-cm.yaml
-  - simulator/temperature-actuator-cm.yaml
-  - simulator/light-sensor-cm.yaml
-  - simulator/light-actuator-cm.yaml
-  - simulator/humidity-sensor-cm.yaml
-  - simulator/humidity-actuator-cm.yaml
-  - simulator/alert-agent-cm.yaml
-  
-  # Deployments and Services
-  - simulator/temperature-sensor-depl.yaml
-  - simulator/temperature-sensor-svc.yaml
-  - simulator/temperature-actuator-depl.yaml
-  - simulator/temperature-actuator-svc.yaml
-  - simulator/light-sensor-depl.yaml
-  - simulator/light-sensor-svc.yaml
-  - simulator/light-actuator-depl.yaml
-  - simulator/light-actuator-svc.yaml
-  - simulator/humidity-sensor-depl.yaml
-  - simulator/humidity-sensor-svc.yaml
-  - simulator/humidity-actuator-depl.yaml
-  - simulator/humidity-actuator-svc.yaml
-  - simulator/alert-agent-depl.yaml
-  - simulator/alert-agent-svc.yaml
+  # Reference the base configuration
+  - base
   
   # Persistent Volume Claims
   - pvc-mosquitto.yaml

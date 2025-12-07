@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hotel-config
+  # Namespace will be set by operator
+data:
+  # These values will be replaced by the operator based on Hotel CRD
+  namespace: "HOTEL_NAMESPACE"
+  hotelId: "HOTEL_ID"
+  kafkaBroker: "KAFKA_BROKER"
+  mqttBroker: "MQTT_BROKER"
+  replicas: "REPLICAS"

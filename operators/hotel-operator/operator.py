@@ -1,0 +1,268 @@
+#!/usr/bin/env python3
+"""
+Lightweight Hotel Operator
+Watches Hotel CRDs and creates supporting resources
+"""
+
+import os
+import time
+import logging
+from kubernetes import client, config, watch
+from kubernetes.client.rest import ApiException
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger('hotel-operator')
+
+# Load kubernetes config
+try:
+    config.load_incluster_config()
+    logger.info("Loaded in-cluster config")
+except:
+    config.load_kube_config()
+    logger.info("Loaded kube config from file")
+
+# Initialize API clients
+v1 = client.CoreV1Api()
+custom_api = client.CustomObjectsApi()
+apps_v1 = client.AppsV1Api()
+
+HOTEL_GROUP = "platform.devops.io"
+HOTEL_VERSION = "v1alpha1"
+HOTEL_PLURAL = "hotels"
+ROOM_PLURAL = "rooms"
+
+
+def create_namespace(hotel_id, location):
+    """Create namespace for hotel"""
+    namespace = client.V1Namespace(
+        metadata=client.V1ObjectMeta(
+            name=hotel_id,
+            labels={
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/location": location,
+                "platform.devops.io/managed-by": "hotel-operator",
+                "argocd.argoproj.io/instance": hotel_id,
+            }
+        )
+    )
+    
+    try:
+        v1.create_namespace(namespace)
+        logger.info(f"Created namespace: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"Namespace {hotel_id} already exists")
+            # Update labels
+            v1.patch_namespace(hotel_id, namespace)
+        else:
+            logger.error(f"Error creating namespace: {e}")
+            raise
+
+
+def create_hotel_config_map(hotel_id, namespace, spec):
+    """Create ConfigMap with hotel configuration for ApplicationSet"""
+    
+    # Extract configuration from spec
+    kafka_broker = spec.get('kafka', {}).get('bootstrapServers', 
+                                             'kafka.central.svc.cluster.local:9092')
+    replicas = spec.get('replicas', 1)
+    location = spec.get('location', 'unknown')
+    
+    config_map = client.V1ConfigMap(
+        metadata=client.V1ObjectMeta(
+            name=f"{hotel_id}-config",
+            namespace="argocd",  # ConfigMap in argocd namespace for ApplicationSet
+            labels={
+                "platform.devops.io/resource-type": "hotel-instance",
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/managed-by": "hotel-operator",
+            }
+        ),
+        data={
+            "hotelId": hotel_id,
+            "namespace": namespace,
+            "location": location,
+            "kafkaBroker": kafka_broker,
+            "mqttBroker": f"mosquitto.{namespace}.svc.cluster.local",
+            "replicas": str(replicas),
+        }
+    )
+    
+    try:
+        v1.create_namespaced_config_map("argocd", config_map)
+        logger.info(f"Created ConfigMap for hotel: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"ConfigMap for {hotel_id} already exists, updating...")
+            v1.patch_namespaced_config_map(f"{hotel_id}-config", "argocd", config_map)
+        else:
+            logger.error(f"Error creating ConfigMap: {e}")
+            raise
+
+
+def create_mqtt_secret(hotel_id, namespace):
+    """Create MQTT credentials secret"""
+    import base64
+    
+    secret = client.V1Secret(
+        metadata=client.V1ObjectMeta(
+            name="mosquitto-credentials",
+            namespace=namespace,
+            labels={
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/managed-by": "hotel-operator",
+            }
+        ),
+        type="Opaque",
+        data={
+            # Base64 encoded credentials
+            "username": base64.b64encode(b"hotel-user").decode('utf-8'),
+            "password": base64.b64encode(f"{hotel_id}-password".encode()).decode('utf-8'),
+        }
+    )
+    
+    try:
+        v1.create_namespaced_secret(namespace, secret)
+        logger.info(f"Created MQTT secret for hotel: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"Secret already exists for {hotel_id}")
+        else:
+            logger.error(f"Error creating secret: {e}")
+
+
+def create_room_crds(hotel_id, namespace, rooms):
+    """Create Room CRDs for each room in the hotel spec"""
+    if not rooms:
+        logger.info(f"No rooms specified for hotel: {hotel_id}")
+        return
+    
+    for room in rooms:
+        room_id = room.get('roomId')
+        if not room_id:
+            logger.warning(f"Room missing roomId in hotel {hotel_id}")
+            continue
+        
+        room_crd = {
+            "apiVersion": f"{HOTEL_GROUP}/{HOTEL_VERSION}",
+            "kind": "Room",
+            "metadata": {
+                "name": f"{hotel_id}-{room_id}",
+                "namespace": namespace,
+                "labels": {
+                    "platform.devops.io/hotel-id": hotel_id,
+                    "platform.devops.io/room-id": room_id,
+                    "platform.devops.io/managed-by": "hotel-operator",
+                }
+            },
+            "spec": {
+                "roomId": room_id,
+                "hotelId": hotel_id,
+                "replicas": room.get('replicas', 1),
+                "sensors": room.get('sensors', {})
+            }
+        }
+        
+        try:
+            custom_api.create_namespaced_custom_object(
+                group=HOTEL_GROUP,
+                version=HOTEL_VERSION,
+                namespace=namespace,
+                plural=ROOM_PLURAL,
+                body=room_crd
+            )
+            logger.info(f"Created Room CRD: {room_id} in hotel {hotel_id}")
+        except ApiException as e:
+            if e.status == 409:
+                logger.info(f"Room {room_id} already exists in {hotel_id}")
+            else:
+                logger.error(f"Error creating Room CRD: {e}")
+
+
+def handle_hotel_event(event_type, hotel):
+    """Handle hotel CRD events"""
+    try:
+        metadata = hotel.get('metadata', {})
+        spec = hotel.get('spec', {})
+        
+        hotel_id = spec.get('hotelId')
+        location = spec.get('location', 'unknown')
+        namespace = hotel_id  # Use hotelId as namespace name
+        
+        logger.info(f"Processing {event_type} event for hotel: {hotel_id}")
+        
+        if event_type in ['ADDED', 'MODIFIED']:
+            # Create or update resources
+            create_namespace(hotel_id, location)
+            create_hotel_config_map(hotel_id, namespace, spec)
+            create_mqtt_secret(hotel_id, namespace)
+            
+            # Optionally create Room CRDs if specified
+            rooms = spec.get('rooms', [])
+            if rooms:
+                create_room_crds(hotel_id, namespace, rooms)
+            
+            logger.info(f"Successfully processed hotel: {hotel_id}")
+        
+        elif event_type == 'DELETED':
+            # Clean up ConfigMap (namespace deletion handled by Kubernetes)
+            try:
+                v1.delete_namespaced_config_map(
+                    f"{hotel_id}-config",
+                    "argocd"
+                )
+                logger.info(f"Deleted ConfigMap for hotel: {hotel_id}")
+            except ApiException as e:
+                if e.status != 404:
+                    logger.error(f"Error deleting ConfigMap: {e}")
+    
+    except Exception as e:
+        logger.error(f"Error handling hotel event: {e}", exc_info=True)
+
+
+def watch_hotels():
+    """Watch for Hotel CRD changes"""
+    logger.info("Starting hotel operator - watching for Hotel CRDs...")
+    
+    w = watch.Watch()
+    
+    while True:
+        try:
+            for event in w.stream(
+                custom_api.list_cluster_custom_object,
+                group=HOTEL_GROUP,
+                version=HOTEL_VERSION,
+                plural=HOTEL_PLURAL,
+                timeout_seconds=60
+            ):
+                event_type = event['type']
+                hotel = event['object']
+                handle_hotel_event(event_type, hotel)
+        
+        except ApiException as e:
+            logger.error(f"API Exception in watch loop: {e}")
+            time.sleep(5)
+        except Exception as e:
+            logger.error(f"Unexpected error in watch loop: {e}", exc_info=True)
+            time.sleep(5)
+
+
+def main():
+    """Main operator loop"""
+    logger.info("Hotel Operator Starting...")
+    
+    # Ensure argocd namespace exists (for ConfigMaps)
+    try:
+        v1.read_namespace("argocd")
+    except ApiException:
+        logger.warning("argocd namespace not found - ConfigMaps will fail")
+    
+    # Start watching
+    watch_hotels()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Hotel Manager{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ hotels|length }}</h3>
+        <p>Total Hotels</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ hotels|selectattr('status_info.status', 'equalto', 'Running')|list|length }}</h3>
+        <p>Running Hotels</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ hotels|sum(attribute='room_count') }}</h3>
+        <p>Total Rooms</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ hotels|sum(attribute='status_info.running_pods') }}</h3>
+        <p>Running Pods</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Quick Actions</h3>
+    <div class="actions">
+        <a href="{{ url_for('create_hotel') }}" class="btn btn-primary">➕ Create New Hotel</a>
+        <a href="{{ url_for('list_hotels') }}" class="btn btn-secondary">📋 View All Hotels</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Recent Hotels</h3>
+    {% if hotels %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Hotel ID</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Rooms</th>
+                    <th>Pods</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hotel in hotels[:5] %}
+                <tr>
+                    <td><strong>{{ hotel.spec.hotelId }}</strong></td>
+                    <td>{{ hotel.spec.location }}</td>
+                    <td>
+                        {% if hotel.status_info.status == 'Running' %}
+                            <span class="badge badge-success">Running</span>
+                        {% elif hotel.status_info.status == 'Partial' %}
+                            <span class="badge badge-warning">Partial</span>
+                        {% else %}
+                            <span class="badge badge-info">Not Deployed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ hotel.room_count }}</td>
+                    <td>{{ hotel.status_info.running_pods }}/{{ hotel.status_info.total_pods }}</td>
+                    <td>
+                        <a href="{{ url_for('view_hotel', name=hotel.metadata.name, namespace=hotel.metadata.namespace) }}" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; padding: 40px; color: #6c757d;">
+            No hotels found. <a href="{{ url_for('create_hotel') }}">Create your first hotel</a>
+        </p>
+    {% endif %}
+</div>
+{% endblock %}
