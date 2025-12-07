@@ -58,31 +58,6 @@ resources:
 
 # Replacements for dynamic values
 replacements:
-  # Namespace replacement
-  - source:
-      kind: ConfigMap
-      name: hotel-config
-      fieldPath: data.namespace
-    targets:
-      - select:
-          kind: Deployment
-        fieldPaths:
-          - metadata.namespace
-      - select:
-          kind: Service
-        fieldPaths:
-          - metadata.namespace
-      - select:
-          kind: ConfigMap
-        reject:
-          - name: hotel-config
-        fieldPaths:
-          - metadata.namespace
-      - select:
-          kind: PersistentVolumeClaim
-        fieldPaths:
-          - metadata.namespace
-
   # Kafka broker replacement
   - source:
       kind: ConfigMap
