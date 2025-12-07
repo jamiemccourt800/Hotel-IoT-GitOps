@@ -68,7 +68,6 @@ replacements:
           kind: Deployment
         fieldPaths:
           - metadata.namespace
-          - spec.template.metadata.namespace
       - select:
           kind: Service
         fieldPaths:
