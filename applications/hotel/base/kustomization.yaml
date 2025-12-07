@@ -74,6 +74,8 @@ replacements:
           - metadata.namespace
       - select:
           kind: ConfigMap
+        reject:
+          - name: hotel-config
         fieldPaths:
           - metadata.namespace
       - select:
