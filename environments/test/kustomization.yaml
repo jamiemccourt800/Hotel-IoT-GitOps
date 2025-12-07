@@ -1,6 +1,8 @@
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
+  - ./../../operators/hotel-operator
+  - ./../../applications/hotel-manager
   - ./backend-ingress.yaml
   - ./frontend-ingress.yaml
 
@@ -41,4 +43,10 @@ images:
   - name: booking-api
     newName: dkitdevops/booking_api
     newTag: v1.0
+  
+  - name: dkitdevops/hotel-operator
+    newTag: latest
+
+  - name: dkitdevops/hotel-manager
+    newTag: latest
   

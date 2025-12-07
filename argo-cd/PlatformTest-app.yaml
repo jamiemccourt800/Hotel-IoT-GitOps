@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: staging
+  name: test
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: https://gitlab.comp.dkit.ie/D00271292/devops-project-gitops.git
-    targetRevision: main
-    path: environments/staging
+    targetRevision: DGP140/PlatformEng
+    path: environments/test
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
