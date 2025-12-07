@@ -11,6 +11,7 @@ resources:
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
   - frontend/frontend-configmap.yml
+  - kafka/kafka-nodepool.yaml
   - kafka/kraftbroker_controller.yaml
   - kafka/kafka-alias-svc.yaml
   - pvc-grafana.yaml
