@@ -4,6 +4,9 @@ kind: Kustomization
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
+  - ./gateway.yaml
+  - ./gateway-service.yaml
+  - ./gateway-config.yaml
 
 # Patch PVCs to use K3s local-path storage class
 patches:
