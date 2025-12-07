@@ -7,6 +7,7 @@ resources:
   - ./gateway.yaml
   - ./gateway-service.yaml
   - ./gateway-config.yaml
+  - ./gateway-ingress.yaml
 
 # Patch PVCs to use K3s local-path storage class
 patches:
