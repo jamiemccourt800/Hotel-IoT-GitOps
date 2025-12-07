@@ -15,6 +15,3 @@ resources:
   
   # Reference the base configuration
   - base
-  
-  # Persistent Volume Claims
-  - pvc-mosquitto.yaml
