@@ -1,7 +1,8 @@
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - ./ingress.yaml
+  - ./backend-ingress.yaml
+  - ./frontend-ingress.yaml
 
 patches:
   - path: grafana-env-patch.yml
