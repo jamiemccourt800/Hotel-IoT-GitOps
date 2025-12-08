@@ -134,6 +134,174 @@ def create_mqtt_secret(hotel_id, namespace):
             logger.error(f"Error creating secret: {e}")
 
 
+def create_mqtt_broker(hotel_id, namespace, spec):
+    """Create MQTT broker (mosquitto) deployment and service"""
+    mqtt_config = spec.get('mqtt', {})
+    
+    if not mqtt_config.get('enabled', True):
+        logger.info(f"MQTT disabled for hotel: {hotel_id}")
+        return
+    
+    replicas = mqtt_config.get('replicas', 1)
+    port = mqtt_config.get('port', 1883)
+    
+    # Create ConfigMap for mosquitto
+    mosquitto_conf = """
+listener 1883
+allow_anonymous true
+persistence true
+persistence_location /mosquitto/data/
+"""
+    
+    config_map = client.V1ConfigMap(
+        metadata=client.V1ObjectMeta(
+            name="mosquitto-config",
+            namespace=namespace,
+            labels={
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/managed-by": "hotel-operator",
+            }
+        ),
+        data={"mosquitto.conf": mosquitto_conf}
+    )
+    
+    try:
+        v1.create_namespaced_config_map(namespace, config_map)
+        logger.info(f"Created mosquitto ConfigMap for hotel: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"Mosquitto ConfigMap already exists for {hotel_id}")
+        else:
+            logger.error(f"Error creating mosquitto ConfigMap: {e}")
+    
+    # Create PVC for mosquitto data
+    pvc = client.V1PersistentVolumeClaim(
+        metadata=client.V1ObjectMeta(
+            name="mosquitto-data",
+            namespace=namespace,
+            labels={
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/managed-by": "hotel-operator",
+            }
+        ),
+        spec=client.V1PersistentVolumeClaimSpec(
+            access_modes=["ReadWriteOnce"],
+            resources=client.V1ResourceRequirements(
+                requests={"storage": "1Gi"}
+            )
+        )
+    )
+    
+    try:
+        v1.create_namespaced_persistent_volume_claim(namespace, pvc)
+        logger.info(f"Created PVC for hotel: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"PVC already exists for {hotel_id}")
+        else:
+            logger.error(f"Error creating PVC: {e}")
+    
+    # Create Deployment
+    deployment = client.V1Deployment(
+        metadata=client.V1ObjectMeta(
+            name="mosquitto",
+            namespace=namespace,
+            labels={
+                "app": "mosquitto",
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/managed-by": "hotel-operator",
+            }
+        ),
+        spec=client.V1DeploymentSpec(
+            replicas=replicas,
+            selector=client.V1LabelSelector(
+                match_labels={"app": "mosquitto"}
+            ),
+            template=client.V1PodTemplateSpec(
+                metadata=client.V1ObjectMeta(
+                    labels={"app": "mosquitto"}
+                ),
+                spec=client.V1PodSpec(
+                    containers=[
+                        client.V1Container(
+                            name="mosquitto",
+                            image="eclipse-mosquitto:latest",
+                            ports=[client.V1ContainerPort(container_port=port)],
+                            volume_mounts=[
+                                client.V1VolumeMount(
+                                    name="mosquitto-config",
+                                    mount_path="/mosquitto/config"
+                                ),
+                                client.V1VolumeMount(
+                                    name="mosquitto-data",
+                                    mount_path="/mosquitto/data"
+                                )
+                            ]
+                        )
+                    ],
+                    volumes=[
+                        client.V1Volume(
+                            name="mosquitto-config",
+                            config_map=client.V1ConfigMapVolumeSource(
+                                name="mosquitto-config",
+                                items=[client.V1KeyToPath(key="mosquitto.conf", path="mosquitto.conf")]
+                            )
+                        ),
+                        client.V1Volume(
+                            name="mosquitto-data",
+                            persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(
+                                claim_name="mosquitto-data"
+                            )
+                        )
+                    ]
+                )
+            )
+        )
+    )
+    
+    try:
+        apps_v1.create_namespaced_deployment(namespace, deployment)
+        logger.info(f"Created mosquitto deployment for hotel: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"Mosquitto deployment already exists for {hotel_id}")
+        else:
+            logger.error(f"Error creating mosquitto deployment: {e}")
+    
+    # Create Service
+    service = client.V1Service(
+        metadata=client.V1ObjectMeta(
+            name="mosquitto",
+            namespace=namespace,
+            labels={
+                "app": "mosquitto",
+                "platform.devops.io/hotel-id": hotel_id,
+                "platform.devops.io/managed-by": "hotel-operator",
+            }
+        ),
+        spec=client.V1ServiceSpec(
+            selector={"app": "mosquitto"},
+            ports=[
+                client.V1ServicePort(
+                    port=port,
+                    target_port=port,
+                    name="mqtt"
+                )
+            ],
+            type="ClusterIP"
+        )
+    )
+    
+    try:
+        v1.create_namespaced_service(namespace, service)
+        logger.info(f"Created mosquitto service for hotel: {hotel_id}")
+    except ApiException as e:
+        if e.status == 409:
+            logger.info(f"Mosquitto service already exists for {hotel_id}")
+        else:
+            logger.error(f"Error creating mosquitto service: {e}")
+
+
 def create_room_crds(hotel_id, namespace, rooms):
     """Create Room CRDs for each room in the hotel spec"""
     if not rooms:
@@ -199,6 +367,7 @@ def handle_hotel_event(event_type, hotel):
             create_namespace(hotel_id, location)
             create_hotel_config_map(hotel_id, namespace, spec)
             create_mqtt_secret(hotel_id, namespace)
+            create_mqtt_broker(hotel_id, namespace, spec)
             
             # Optionally create Room CRDs if specified
             rooms = spec.get('rooms', [])

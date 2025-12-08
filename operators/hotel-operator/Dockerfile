@@ -7,7 +7,7 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy operator code
-COPY operator.py /app/
+COPY hotel_operator.py /app/
 
 # Run as non-root user
 RUN useradd -m -u 1000 -g users operator && \
@@ -15,4 +15,4 @@ RUN useradd -m -u 1000 -g users operator && \
 
 USER operator
 
-CMD ["python", "-u", "operator.py"]
+CMD ["python", "-u", "hotel_operator.py"]
