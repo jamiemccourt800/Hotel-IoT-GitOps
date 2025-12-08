@@ -39,10 +39,11 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: test
-  # Fix ServiceAccount namespaces
+  # Override namespace from central-prod to central-test for hotel-operator and hotel-manager resources
   - target:
       kind: ServiceAccount
       name: test-hotel-operator
+      namespace: central-prod
     patch: |-
       - op: replace
         path: /metadata/namespace
@@ -50,14 +51,15 @@ patches:
   - target:
       kind: ServiceAccount
       name: test-hotel-manager
+      namespace: central-prod
     patch: |-
       - op: replace
         path: /metadata/namespace
         value: central-test
-  # Fix Deployment namespaces
   - target:
       kind: Deployment
       name: test-hotel-operator
+      namespace: central-prod
     patch: |-
       - op: replace
         path: /metadata/namespace
@@ -65,11 +67,19 @@ patches:
   - target:
       kind: Deployment
       name: test-hotel-manager
+      namespace: central-prod
     patch: |-
       - op: replace
         path: /metadata/namespace
         value: central-test
-  # Fix Ingress namespace
+  - target:
+      kind: Service
+      name: test-hotel-manager
+      namespace: central-prod
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
   - target:
       kind: Ingress
       name: test-hotel-manager
