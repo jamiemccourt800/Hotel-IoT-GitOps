@@ -1,3 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Add prefix to all resources to avoid collision with other environments
+namePrefix: test-
+
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
@@ -10,17 +16,17 @@ patches:
   - path: grafana-env-patch.yml
     target:
       kind: Deployment
-      name: grafana
+      name: test-grafana
   - target:
       kind: Namespace
-      name: hotel-prod
+      name: test-hotel-prod
     patch: |-
       - op: replace
         path: /metadata/name
         value: hotel-test
   - target:
       kind: Namespace
-      name: central-prod
+      name: test-central-prod
     patch: |-
       - op: replace
         path: /metadata/name
@@ -28,11 +34,55 @@ patches:
   # Update ENVIRONMENT env var for operators
   - target:
       kind: Deployment
-      name: hotel-operator
+      name: test-hotel-operator
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: test
+  # Fix ClusterRoleBinding subjects to use correct ServiceAccount names
+  - target:
+      kind: ClusterRoleBinding
+      name: test-hotel-operator-binding
+    patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: test-hotel-operator
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-test
+  - target:
+      kind: ClusterRoleBinding
+      name: test-hotel-manager-binding
+    patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: test-hotel-manager
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-test
+  - target:
+      kind: ClusterRoleBinding
+      name: test-strimzi-cluster-operator
+    patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: test-strimzi-cluster-operator
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-test
+  - target:
+      kind: ClusterRoleBinding
+      name: test-vm-victoria-metrics-cluster-clusterrolebinding
+    patch: |-
+      - op: replace
+        path: /roleRef/name
+        value: test-vm-victoria-metrics-cluster-clusterrole
+      - op: replace
+        path: /subjects/0/name
+        value: test-vm-victoria-metrics-cluster
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-test
 images:
   - name: command
     newName: dkitdevops/central-command

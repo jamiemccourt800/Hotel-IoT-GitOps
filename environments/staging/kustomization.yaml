@@ -1,6 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# Add prefix to all resources to avoid collision with other environments
+namePrefix: staging-
+
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
@@ -13,14 +16,14 @@ resources:
 patches:
   - target:
       kind: Namespace
-      name: hotel-prod
+      name: staging-hotel-prod
     patch: |-
       - op: replace
         path: /metadata/name
         value: hotel-staging
   - target:
       kind: Namespace
-      name: central-prod
+      name: staging-central-prod
     patch: |-
       - op: replace
         path: /metadata/name
@@ -28,11 +31,55 @@ patches:
   # Update ENVIRONMENT env var for operators
   - target:
       kind: Deployment
-      name: hotel-operator
+      name: staging-hotel-operator
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: staging
+  # Fix ClusterRoleBinding subjects to use correct ServiceAccount names
+  - target:
+      kind: ClusterRoleBinding
+      name: staging-hotel-operator-binding
+    patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: staging-hotel-operator
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-staging
+  - target:
+      kind: ClusterRoleBinding
+      name: staging-hotel-manager-binding
+    patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: staging-hotel-manager
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-staging
+  - target:
+      kind: ClusterRoleBinding
+      name: staging-strimzi-cluster-operator
+    patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: staging-strimzi-cluster-operator
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-staging
+  - target:
+      kind: ClusterRoleBinding
+      name: staging-vm-victoria-metrics-cluster-clusterrolebinding
+    patch: |-
+      - op: replace
+        path: /roleRef/name
+        value: staging-vm-victoria-metrics-cluster-clusterrole
+      - op: replace
+        path: /subjects/0/name
+        value: staging-vm-victoria-metrics-cluster
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-staging
   - target:
       kind: PersistentVolumeClaim
     patch: |-
