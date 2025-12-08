@@ -34,15 +34,23 @@ HOTEL_VERSION = "v1alpha1"
 HOTEL_PLURAL = "hotels"
 ROOM_PLURAL = "rooms"
 
+# Get environment from env var (prod, staging, test)
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'prod')
+logger.info(f"Operator running in environment: {ENVIRONMENT}")
+
 
 def create_namespace(hotel_id, location):
     """Create namespace for hotel"""
+    # Namespace format: hotel-{id}-{env} (e.g., hotel-dublin-prod)
+    namespace_name = f"{hotel_id}-{ENVIRONMENT}"
+    
     namespace = client.V1Namespace(
         metadata=client.V1ObjectMeta(
-            name=hotel_id,
+            name=namespace_name,
             labels={
                 "platform.devops.io/hotel-id": hotel_id,
                 "platform.devops.io/location": location,
+                "platform.devops.io/environment": ENVIRONMENT,
                 "platform.devops.io/managed-by": "hotel-operator",
                 "argocd.argoproj.io/instance": hotel_id,
             }
@@ -51,23 +59,27 @@ def create_namespace(hotel_id, location):
     
     try:
         v1.create_namespace(namespace)
-        logger.info(f"Created namespace: {hotel_id}")
+        logger.info(f"Created namespace: {namespace_name}")
     except ApiException as e:
         if e.status == 409:
-            logger.info(f"Namespace {hotel_id} already exists")
+            logger.info(f"Namespace {namespace_name} already exists")
             # Update labels
-            v1.patch_namespace(hotel_id, namespace)
+            v1.patch_namespace(namespace_name, namespace)
         else:
             logger.error(f"Error creating namespace: {e}")
             raise
+    
+    return namespace_name
 
 
 def create_hotel_config_map(hotel_id, namespace, spec):
     """Create ConfigMap with hotel configuration for ApplicationSet"""
     
     # Extract configuration from spec
+    # Use environment-specific central namespace for kafka broker
+    central_namespace = f"central-{ENVIRONMENT}"
     kafka_broker = spec.get('kafka', {}).get('bootstrapServers', 
-                                             'kafka.central.svc.cluster.local:9092')
+                                             f'kafka.{central_namespace}.svc.cluster.local:9092')
     replicas = spec.get('replicas', 1)
     location = spec.get('location', 'unknown')
     
@@ -358,13 +370,12 @@ def handle_hotel_event(event_type, hotel):
         
         hotel_id = spec.get('hotelId')
         location = spec.get('location', 'unknown')
-        namespace = hotel_id  # Use hotelId as namespace name
         
-        logger.info(f"Processing {event_type} event for hotel: {hotel_id}")
+        logger.info(f"Processing {event_type} event for hotel: {hotel_id} in {ENVIRONMENT}")
         
         if event_type in ['ADDED', 'MODIFIED']:
-            # Create or update resources
-            create_namespace(hotel_id, location)
+            # Create or update resources with environment-specific namespace
+            namespace = create_namespace(hotel_id, location)
             create_hotel_config_map(hotel_id, namespace, spec)
             create_mqtt_secret(hotel_id, namespace)
             create_mqtt_broker(hotel_id, namespace, spec)
@@ -374,7 +385,7 @@ def handle_hotel_event(event_type, hotel):
             if rooms:
                 create_room_crds(hotel_id, namespace, rooms)
             
-            logger.info(f"Successfully processed hotel: {hotel_id}")
+            logger.info(f"Successfully processed hotel: {hotel_id} in namespace: {namespace}")
         
         elif event_type == 'DELETED':
             # Clean up ConfigMap (namespace deletion handled by Kubernetes)

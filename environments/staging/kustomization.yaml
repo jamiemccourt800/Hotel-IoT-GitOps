@@ -12,6 +12,28 @@ resources:
 # Patch PVCs to use K3s local-path storage class
 patches:
   - target:
+      kind: Namespace
+      name: hotel-prod
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: hotel-staging
+  - target:
+      kind: Namespace
+      name: central-prod
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: central-staging
+  # Update ENVIRONMENT env var for operators
+  - target:
+      kind: Deployment
+      name: hotel-operator
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/1/value
+        value: staging
+  - target:
       kind: PersistentVolumeClaim
     patch: |-
       - op: replace

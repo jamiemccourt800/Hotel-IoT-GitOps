@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# This is now a legacy/static hotel configuration
-# For dynamic hotel instances, use the ApplicationSet with hotel-operator
+# CRDs and namespace only - no hotel instances by default
+# Hotels and rooms should be created using the CRDs via hotel-operator or hotel-manager
 
 namespace: hotel
 
@@ -12,6 +12,3 @@ resources:
   # Platform Engineering CRDs for hotel and room scaling
   - hotel-crd.yaml
   - room-crd.yaml
-  
-  # Reference the base configuration
-  - base

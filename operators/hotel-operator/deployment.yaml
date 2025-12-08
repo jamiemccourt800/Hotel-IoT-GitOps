@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: hotel-operator
-  namespace: default
+  namespace: central-prod
   labels:
     app: hotel-operator
 ---
@@ -57,13 +57,13 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hotel-operator
-    namespace: default
+    namespace: central-prod
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hotel-operator
-  namespace: default
+  namespace: central-prod
   labels:
     app: hotel-operator
 spec:
@@ -91,3 +91,5 @@ spec:
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
+            - name: ENVIRONMENT
+              value: "prod"

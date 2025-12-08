@@ -12,7 +12,29 @@ patches:
   - path: grafana-env-patch.yml
     target:
       kind: Deployment
-      name: grafana 
+      name: grafana
+  - target:
+      kind: Namespace
+      name: hotel-prod
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: hotel-prod
+  - target:
+      kind: Namespace
+      name: central-prod
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: central-prod
+  # Update ENVIRONMENT env var for operators
+  - target:
+      kind: Deployment
+      name: hotel-operator
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/1/value
+        value: prod 
 
 images:
   - name: command
