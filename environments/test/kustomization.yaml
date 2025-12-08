@@ -108,6 +108,31 @@ patches:
       - op: replace
         path: /subjects/0/namespace
         value: central-test
+  # Update PVC namespaces for central-test environment
+  - target:
+      kind: PersistentVolumeClaim
+      name: test-mongodb-data
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: PersistentVolumeClaim
+      name: test-grafana-storage
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: PersistentVolumeClaim
+      name: test-vm-victoria-metrics-cluster-vmstorage
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
   # Strimzi operator stays in central namespace as it manages Kafka for all environments
   - target:
       kind: ClusterRoleBinding
