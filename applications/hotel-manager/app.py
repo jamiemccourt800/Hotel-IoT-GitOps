@@ -223,8 +223,11 @@ def create_hotel():
             return redirect(url_for('list_hotels'))
             
         except ApiException as e:
-            flash(f'Error creating hotel: {e.reason}', 'error')
-            logger.error(f"Error creating hotel: {e}")
+            error_msg = f'Error creating hotel: {e.status} - {e.reason}'
+            if e.status == 404:
+                error_msg = 'Hotel CRD not found. Please ensure the Hotel CustomResourceDefinition is installed in the cluster.'
+            flash(error_msg, 'error')
+            logger.error(f"Error creating hotel: {e.status} - {e.reason} - {e.body}")
         except Exception as e:
             flash(f'Error: {str(e)}', 'error')
             logger.error(f"Unexpected error creating hotel: {e}")
@@ -390,7 +393,71 @@ def api_hotels():
 @app.route('/health')
 def health():
     """Health check endpoint"""
-    return jsonify({'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()})
+    try:
+        # Check if CRDs are available
+        custom_api.get_api_resources(group=HOTEL_GROUP, version=HOTEL_VERSION)
+        crd_status = 'available'
+    except Exception as e:
+        crd_status = f'unavailable: {str(e)}'
+    
+    return jsonify({
+        'status': 'healthy', 
+        'timestamp': datetime.utcnow().isoformat(),
+        'crd_status': crd_status
+    })
+
+
+@app.route('/api/check-crds')
+def check_crds():
+    """Check if Hotel and Room CRDs are installed"""
+    try:
+        # Try to list hotels to verify CRD exists
+        custom_api.list_cluster_custom_object(
+            group=HOTEL_GROUP,
+            version=HOTEL_VERSION,
+            plural=HOTEL_PLURAL
+        )
+        hotel_crd_installed = True
+        hotel_crd_error = None
+    except ApiException as e:
+        hotel_crd_installed = False
+        hotel_crd_error = f"{e.status}: {e.reason}"
+    except Exception as e:
+        hotel_crd_installed = False
+        hotel_crd_error = str(e)
+    
+    try:
+        # Try to list rooms to verify CRD exists
+        custom_api.list_cluster_custom_object(
+            group=HOTEL_GROUP,
+            version=HOTEL_VERSION,
+            plural=ROOM_PLURAL
+        )
+        room_crd_installed = True
+        room_crd_error = None
+    except ApiException as e:
+        room_crd_installed = False
+        room_crd_error = f"{e.status}: {e.reason}"
+    except Exception as e:
+        room_crd_installed = False
+        room_crd_error = str(e)
+    
+    return jsonify({
+        'hotel_crd': {
+            'installed': hotel_crd_installed,
+            'error': hotel_crd_error,
+            'group': HOTEL_GROUP,
+            'version': HOTEL_VERSION,
+            'plural': HOTEL_PLURAL
+        },
+        'room_crd': {
+            'installed': room_crd_installed,
+            'error': room_crd_error,
+            'group': HOTEL_GROUP,
+            'version': HOTEL_VERSION,
+            'plural': ROOM_PLURAL
+        }
+    })
 
 
 if __name__ == '__main__':

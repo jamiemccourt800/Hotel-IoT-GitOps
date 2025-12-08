@@ -5,11 +5,15 @@ metadata:
   namespace: default
   labels:
     app: hotel-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: hotel-manager-role
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 rules:
   # Read and manage Hotel CRDs
   - apiGroups: ["platform.devops.io"]
@@ -30,6 +34,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: hotel-manager-binding
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -46,6 +52,8 @@ metadata:
   namespace: default
   labels:
     app: hotel-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   type: ClusterIP
   ports:
@@ -63,6 +71,8 @@ metadata:
   namespace: default
   labels:
     app: hotel-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   replicas: 1
   selector:
