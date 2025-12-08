@@ -109,6 +109,33 @@ patches:
         path: /subjects/0/namespace
         value: central-test
   - target:
+      kind: ServiceAccount
+      name: test-strimzi-cluster-operator
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: Deployment
+      name: test-strimzi-cluster-operator
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: RoleBinding
+      name: test-strimzi-cluster-operator-leader-election
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+      - op: replace
+        path: /subjects/0/namespace
+        value: central-test
+  - target:
       kind: ClusterRoleBinding
       name: test-strimzi-cluster-operator
     patch: |-
