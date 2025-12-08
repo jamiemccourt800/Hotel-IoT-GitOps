@@ -108,6 +108,47 @@ patches:
       - op: replace
         path: /subjects/0/namespace
         value: central-test
+  # Move central namespace deployments to central-test
+  - target:
+      kind: Deployment
+      name: test-mongodb
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: Deployment
+      name: test-grafana
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: Deployment
+      name: test-frontend
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: Deployment
+      name: test-command
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: Deployment
+      name: test-booking-api
+      namespace: central
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
   # Update PVC namespaces for central-test environment
   - target:
       kind: PersistentVolumeClaim
