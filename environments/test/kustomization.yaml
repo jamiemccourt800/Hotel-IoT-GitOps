@@ -51,7 +51,7 @@ patches:
   - target:
       kind: ServiceAccount
       name: test-hotel-manager
-      namespace: central-prod
+      namespace: central
     patch: |-
       - op: replace
         path: /metadata/namespace
@@ -67,7 +67,7 @@ patches:
   - target:
       kind: Deployment
       name: test-hotel-manager
-      namespace: central-prod
+      namespace: central
     patch: |-
       - op: replace
         path: /metadata/namespace
@@ -75,7 +75,7 @@ patches:
   - target:
       kind: Service
       name: test-hotel-manager
-      namespace: central-prod
+      namespace: central
     patch: |-
       - op: replace
         path: /metadata/namespace
