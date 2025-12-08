@@ -119,7 +119,7 @@ patches:
         value: central-test
   - target:
       kind: PersistentVolumeClaim
-      name: test-grafana-storage
+      name: test-grafana-data
       namespace: central
     patch: |-
       - op: replace
@@ -127,7 +127,7 @@ patches:
         value: central-test
   - target:
       kind: PersistentVolumeClaim
-      name: test-vm-victoria-metrics-cluster-vmstorage
+      name: test-victoria-metrics-data
       namespace: central
     patch: |-
       - op: replace
