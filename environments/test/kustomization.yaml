@@ -108,40 +108,7 @@ patches:
       - op: replace
         path: /subjects/0/namespace
         value: central-test
-  - target:
-      kind: ServiceAccount
-      name: test-strimzi-cluster-operator
-      namespace: central
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: central-test
-  - target:
-      kind: Deployment
-      name: test-strimzi-cluster-operator
-      namespace: central
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: central-test
-  - target:
-      kind: RoleBinding
-      name: test-strimzi-cluster-operator-leader-election
-      namespace: central
-    patch: |-
-      - op: replace
-        path: /subjects/0/namespace
-        value: central-test
-  - target:
-      kind: ClusterRoleBinding
-      name: test-strimzi-cluster-operator
-    patch: |-
-      - op: replace
-        path: /subjects/0/name
-        value: test-strimzi-cluster-operator
-      - op: replace
-        path: /subjects/0/namespace
-        value: central-test
+  # Strimzi operator stays in central namespace as it manages Kafka for all environments
   - target:
       kind: ClusterRoleBinding
       name: test-vm-victoria-metrics-cluster-clusterrolebinding
