@@ -39,11 +39,11 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: test
-  # Override namespace from central-prod to central-test for hotel-operator and hotel-manager resources
+  # Override namespace from central to central-test for hotel-operator and hotel-manager resources
   - target:
       kind: ServiceAccount
       name: test-hotel-operator
-      namespace: central-prod
+      namespace: central
     patch: |-
       - op: replace
         path: /metadata/namespace
@@ -59,7 +59,7 @@ patches:
   - target:
       kind: Deployment
       name: test-hotel-operator
-      namespace: central-prod
+      namespace: central
     patch: |-
       - op: replace
         path: /metadata/namespace
