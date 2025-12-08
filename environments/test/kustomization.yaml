@@ -130,9 +130,6 @@ patches:
       namespace: central
     patch: |-
       - op: replace
-        path: /metadata/namespace
-        value: central-test
-      - op: replace
         path: /subjects/0/namespace
         value: central-test
   - target:
