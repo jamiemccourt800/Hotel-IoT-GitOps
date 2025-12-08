@@ -39,6 +39,21 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/1/value
         value: test
+  # Fix ServiceAccount namespaces
+  - target:
+      kind: ServiceAccount
+      name: test-hotel-operator
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
+  - target:
+      kind: ServiceAccount
+      name: test-hotel-manager
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: central-test
   # Fix ClusterRoleBinding subjects to use correct ServiceAccount names
   - target:
       kind: ClusterRoleBinding
