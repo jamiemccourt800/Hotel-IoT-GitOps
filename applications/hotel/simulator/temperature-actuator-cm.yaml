@@ -15,3 +15,4 @@ data:
   DEFAULT_TARGET: "22.0"
   CONTROL_INTERVAL: "5.0"
   DEADBAND: "0.5"
+  UNLEASH_APP_NAME: "actuator"

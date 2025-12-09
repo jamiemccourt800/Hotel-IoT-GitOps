@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: unleash-config
+  labels:
+    app: simulator
+data:
+  UNLEASH_URL: "https://gitlab.comp.dkit.ie/api/v4/feature_flags/unleash/2212"
+  UNLEASH_APP_NAME: "actuator"

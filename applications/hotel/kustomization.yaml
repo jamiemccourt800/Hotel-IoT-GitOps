@@ -20,6 +20,8 @@ resources:
   
   # Simulator Components
   # ConfigMaps
+  - simulator/unleash-config.yaml
+  - simulator/unleash-secret.yaml
   - simulator/temperature-sensor-cm.yaml
   - simulator/temperature-actuator-cm.yaml
   - simulator/light-sensor-cm.yaml
