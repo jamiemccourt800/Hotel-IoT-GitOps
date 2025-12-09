@@ -4,9 +4,9 @@ kind: Kustomization
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - ./gateway.yaml
-  - ./gateway-service.yaml
-  - ./gateway-config.yaml
+  - /gateway/gateway.yaml
+  - /gateway/gateway-service.yaml
+  - /gateway/gateway-config.yaml
 
 patches:
   - path: grafana-env-patch.yml
@@ -20,8 +20,8 @@ images:
     newTag: latest
 
   - name: app-frontend
-    newName: dkitdevops/app-frontend
-    newTag: v1.1
+    newName: dkitdevops/central-app-frontend
+    newTag: latest
 
   - name: hotel-kafka-to-mqtt
     newName: dkitdevops/hotel-kafka-to-mqtt
