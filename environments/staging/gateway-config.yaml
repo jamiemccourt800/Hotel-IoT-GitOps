@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: api-gateway-config
-  namespace: central-staging
+  namespace: central
 data:
   gateway.conf: |
     user nginx;
