@@ -31,6 +31,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: temperature-actuator-config
+            - configMapRef:
+                name: unleash-config
+          env:
+            - name: UNLEASH_INSTANCE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: unleash-secret
+                  key: UNLEASH_INSTANCE_ID
           resources:
             requests:
               memory: "64Mi"

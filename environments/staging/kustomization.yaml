@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ./../../applications/central
+  - ./../../applications/hotel
+  - ./gateway.yaml
+  - ./gateway-service.yaml
+  - ./gateway-config.yaml
+  - ./gateway-ingress.yaml
+
+# Patch PVCs to use K3s local-path storage class
+patches:
+  - target:
+      kind: PersistentVolumeClaim
+    patch: |-
+      - op: replace
+        path: /spec/storageClassName
+        value: local-path
+
+images:
+  - name: command
+    newName: dkitdevops/central-command
+    newTag: latest
+
+  - name: app-frontend
+    newName: dkitdevops/app-frontend
+    newTag: latest
+
+  - name: hotel-kafka-to-mqtt
+    newName: dkitdevops/hotel-kafka-to-mqtt
+    newTag: latest
+
+  - name: hotel-mqtt-to-kafka
+    newName: dkitdevops/hotel-mqtt-to-kafka
+    newTag: latest
+
+  - name: temperature-sensor
+    newName: dkitdevops/hotel-temperature-sensor
+    newTag: latest
+
+  - name: light-actuator
+    newName: dkitdevops/hotel-light-actuator
+    newTag: latest
+
+  - name: alert-agent
+    newName: dkitdevops/hotel-alert-agent
+    newTag: latest
+  
+  - name: booking-api
+    newName: dkitdevops/booking_api
+    newTag: latest

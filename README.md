@@ -123,3 +123,14 @@ Grafana:
 https://frontend.prod.localhost/grafana
 ```
 
+### 
+DEMO
+
+Sample login credentials
+ADMIN
+username: admin
+password 1Password
+
+USER
+username: john_doe
+password: 1Password

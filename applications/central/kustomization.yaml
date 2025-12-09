@@ -11,7 +11,8 @@ resources:
   - frontend/frontend-depl.yaml
   - frontend/frontend-svc.yaml
   - frontend/frontend-configmap.yml
-  - kafka/kafka.yaml
+  - kafka/kafka-nodepool.yaml
+  - kafka/kraftbroker_controller.yaml
   - kafka/kafka-alias-svc.yaml
   - userdb/userdb-depl.yaml
   - userdb/userdb-svc.yaml
@@ -23,6 +24,7 @@ resources:
   - grafana/grafana-dashboards.yaml
   - booking_api/booking_api_depl.yml
   - booking_api/booking_api_svc.yml
+  
 
 configMapGenerator:
   - name: telegraf-config
@@ -68,7 +70,7 @@ helmCharts:
   - name: strimzi-kafka-operator
     repo: https://strimzi.io/charts/
     releaseName: strimzi
-    version: 0.44.0
+    version: 0.46.0
     namespace: central
     valuesInline:
       watchAnyNamespace: false
