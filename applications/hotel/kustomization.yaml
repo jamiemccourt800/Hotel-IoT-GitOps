@@ -43,6 +43,3 @@ resources:
   - simulator/humidity-actuator-svc.yaml
   - simulator/alert-agent-depl.yaml
   - simulator/alert-agent-svc.yaml
-  
-  # Persistent Volume Claims
-  - pvc-mosquitto.yaml
