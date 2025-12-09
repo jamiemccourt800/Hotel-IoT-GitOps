@@ -27,6 +27,8 @@ resources:
   - grafana/grafana-dashboards.yaml
   - booking_api/booking_api_depl.yml
   - booking_api/booking_api_svc.yml
+  - unleash/unleash-proxy-depl.yaml
+  - unleash/unleash-proxy-svc.yaml
   
 
 configMapGenerator:
@@ -56,6 +58,7 @@ helmCharts:
         - name: telegraf-config
           mountPath: /etc/telegraf
           readOnly: true
+
   - name: victoria-metrics-cluster
     includeCRDs: true
     releaseName: vm
@@ -70,6 +73,7 @@ helmCharts:
         replicaCount: 3
       vmstorage:
         replicaCount: 3
+
   - name: strimzi-kafka-operator
     repo: https://strimzi.io/charts/
     releaseName: strimzi
@@ -79,4 +83,4 @@ helmCharts:
       watchAnyNamespace: false
       crds:
         install: true
-      # Strimzi watches only the release namespace (central), avoiding duplicate RoleBindings.
+  # Strimzi watches only the release namespace (central), avoiding duplicate RoleBindings.
