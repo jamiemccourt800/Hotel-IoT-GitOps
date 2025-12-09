@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: central-staging
+data:
+  gateway.conf: |
+    user nginx;
+    worker_processes auto;
+
+    error_log /var/log/nginx/error.log warn;
+    pid /tmp/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        client_max_body_size 50M;
+
+        server {
+            listen 80;
+            server_name _;
+            
+        location /grafana/ {
+            rewrite ^/grafana/?(.*)$ /$1 break;
+            proxy_pass http://staging-grafana:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+
+                    location / {
+            proxy_pass http://staging-frontend-service:80;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+            location /api/booking/ {
+                rewrite ^/api/booking/?(.*)$ /$1 break;
+                proxy_pass http://staging-booking-api-service:8000;
+            }
+
+            location /api/command/ {
+                rewrite ^/api/command/?(.*)$ /$1 break;
+                proxy_pass http://staging-command:5000;
+            }
+
+            location /gateway/health {
+                return 200 "OK\n";
+            }
+        }
+    }
