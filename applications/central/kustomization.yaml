@@ -28,11 +28,11 @@ resources:
 #  - unleash/unleash-proxy-svc.yaml
   
 
-configMapGenerator:
-  - name: my-release-telegraf
-    namespace: central
-    files:
-      - telegraf/telegraf.conf
+#configMapGenerator:
+#  - name: my-release-telegraf
+#    namespace: central
+#    files:
+#      - telegraf/telegraf.conf
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -50,10 +50,12 @@ helmCharts:
       extraVolumes:
         - name: telegraf-config
           configMap:
-            name: telegraf-config
+            name: my-release-telegraf
+            optional: false
       extraVolumeMounts:
         - name: telegraf-config
-          mountPath: /etc/telegraf
+          mountPath: /etc/telegraf/telegraf.conf
+          subPath: telegraf.conf
           readOnly: true
 
   - name: victoria-metrics-cluster
