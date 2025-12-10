@@ -73,3 +73,9 @@ spec:
               value: "5"
             - name: VICTORIA_BASE_URL
               value: "http://vm-victoria-metrics-cluster-vmselect.central.svc.cluster.local:8481"
+            - name: UNLEASH_URL
+              value: https://gitlab.comp.dkit.ie/api/v4/feature_flags/unleash/2212
+            - name: UNLEASH_APP_NAME
+              value: central_command
+            - name: UNLEASH_INSTANCE_ID
+              value: glffct-X6fa8vgxkQcssohsCwqN
