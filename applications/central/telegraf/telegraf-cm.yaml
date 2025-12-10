@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: my-release-telegraf
+  name: telegraf-external-config
   namespace: central
 data:
   telegraf.conf: |

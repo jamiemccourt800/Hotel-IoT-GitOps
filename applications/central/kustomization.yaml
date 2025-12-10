@@ -48,19 +48,19 @@ helmCharts:
       agent:
         interval: "2s"
         round_interval: true
-      config:
-        enabled: false
+      config: {}
       extraVolumes:
-        - name: telegraf-config
+        - name: telegraf-external-config
           configMap:
-            name: my-release-telegraf
+            name: telegraf-external-config
             optional: false
-      extraVolumeMounts:
-        - name: telegraf-config
-          mountPath: /etc/telegraf/telegraf.conf
-          subPath: telegraf.conf
-          readOnly: true
 
+      extraVolumeMounts:
+        - name: telegraf-external-config
+          mountPath: /etc/telegraf/telegraf-extra.conf
+          readOnly: true
+      args:
+        - "--config=/etc/telegraf/telegraf-extra.conf"
   - name: victoria-metrics-cluster
     includeCRDs: true
     releaseName: vm
