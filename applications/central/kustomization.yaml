@@ -6,7 +6,7 @@ namespace: central
 resources:
   - namespace-central.yaml
 #  - telegraf/telegraf.yaml
-  - telegraf/telegraf-cm.yaml
+#  - telegraf/telegraf-cm.yaml
   - command/command-depl.yaml
   - command/command-svc.yaml
   - frontend/frontend-depl.yaml
@@ -48,19 +48,6 @@ helmCharts:
       agent:
         interval: "2s"
         round_interval: true
-      config: {}
-      extraVolumes:
-        - name: telegraf-external-config
-          configMap:
-            name: telegraf-external-config
-            optional: false
-
-      extraVolumeMounts:
-        - name: telegraf-external-config
-          mountPath: /etc/telegraf/telegraf-extra.conf
-          readOnly: true
-      args:
-        - "--config=/etc/telegraf/telegraf-extra.conf"
   - name: victoria-metrics-cluster
     includeCRDs: true
     releaseName: vm

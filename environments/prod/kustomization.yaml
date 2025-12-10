@@ -16,7 +16,11 @@ patches:
   - path: grafana-env-patch.yml
     target:
       kind: Deployment
-      name: grafana 
+      name: grafana
+  - path: telegraf-cm.yaml
+    target:
+      kind: ConfigMap
+      name: my-release-telegraf
 
 images:
   - name: command
