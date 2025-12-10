@@ -29,10 +29,10 @@ resources:
   
 
 configMapGenerator:
-  - name: telegraf-config
+  - name: my-release-telegraf
+    namespace: central
     files:
       - telegraf/telegraf.conf
-
 
 generatorOptions:
   disableNameSuffixHash: true
