@@ -72,7 +72,7 @@ spec:
             - name: LINGER_MS
               value: "5"
             - name: VICTORIA_BASE_URL
-              value: "http://vm-victoria-metrics-cluster-vmselect.central.svc.cluster.local:8481"
+              value: "http://vm-victoria-metrics-cluster-vmselect.central.svc.cluster.local:8481/select/0/prometheus"
             - name: UNLEASH_URL
               value: https://gitlab.comp.dkit.ie/api/v4/feature_flags/unleash/2212
             - name: UNLEASH_APP_NAME
