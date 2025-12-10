@@ -48,6 +48,8 @@ helmCharts:
       agent:
         interval: "2s"
         round_interval: true
+      config:
+        enabled: false
       extraVolumes:
         - name: telegraf-config
           configMap:
