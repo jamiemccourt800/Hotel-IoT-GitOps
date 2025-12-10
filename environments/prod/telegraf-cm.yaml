@@ -5,7 +5,7 @@ metadata:
 data:
   telegraf.conf: |
     [[outputs.influxdb]]
-      urls = ["http://victoria-metrics.central.svc.cluster.local:8428"]
+      urls = ["vm-victoria-metrics-cluster-vminsert.central.svc.cluster.local:8480"]
       database = "victoriametrics"
       skip_database_creation = true
       exclude_retention_policy_tag = true
