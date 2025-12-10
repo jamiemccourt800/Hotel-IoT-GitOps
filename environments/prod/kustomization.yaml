@@ -4,9 +4,13 @@ kind: Kustomization
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
-  - /gateway/gateway.yaml
-  - /gateway/gateway-service.yaml
-  - /gateway/gateway-config.yaml
+  - ./gateway/gateway.yaml
+  - ./gateway/gateway-service.yaml
+  - ./gateway/gateway-config.yaml
+  - ./data/pvc-victoria-metrics.yaml
+  - ./data/pvc-grafana.yaml
+  - ./data/pvc-mosquitto.yaml
+  - ./data/pvc-mongodb.yaml
 
 patches:
   - path: grafana-env-patch.yml

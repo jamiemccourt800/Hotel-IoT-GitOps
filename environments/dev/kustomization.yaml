@@ -1,6 +1,10 @@
 resources:
   - ./../../applications/central
   - ./../../applications/hotel
+  - ./data/pvc-mongodb.yaml
+  - ./data/pvc-grafana.yaml
+  - ./data/pvc-mosquitto.yaml
+  - ./data/pvc-victoria-metrics.yaml
 
 images:
   - name: command
