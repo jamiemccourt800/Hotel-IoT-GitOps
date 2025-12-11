@@ -16,5 +16,5 @@ helmCharts:
           insecure: true
           plaintext: false
       extraArgs:
-        - --interval=10m
+        - --interval= 30m
 
