@@ -15,3 +15,6 @@ helmCharts:
           serverAddr: argocd-server.argocd.svc.cluster.local:443
           insecure: true
           plaintext: false
+      extraArgs:
+        - --interval=10m
+
