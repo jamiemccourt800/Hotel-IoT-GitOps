@@ -5,6 +5,19 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: |
+      command=dkitdevops/central-command:latest,
+      app-frontend=dkitdevops/central-app-frontend:latest,
+      hotel-kafka-to-mqtt=dkitdevops/hotel-kafka-to-mqtt:stable,
+      hotel-mqtt-to-kafka=dkitdevops/hotel-mqtt-to-kafka:stable,
+      temperature-sensor=dkitdevops/hotel-temperature-sensor:latest,
+      light-actuator=dkitdevops/hotel-light-actuator:latest,
+      alert-agent=dkitdevops/hotel-alert-agent:latest,
+      booking-api=dkitdevops/booking_api:v1.0
+    argocd-image-updater.argoproj.io/update-strategy: digest
+    argocd-image-updater.argoproj.io/write-back-method: argocd
+
 spec:
   project: default
   source:

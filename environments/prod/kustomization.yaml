@@ -11,6 +11,7 @@ resources:
   - ./data/pvc-grafana.yaml
   - ./data/pvc-mosquitto.yaml
   - ./data/pvc-mongodb.yaml
+  - ./image-updater
 
 patches:
   - path: grafana-env-patch.yml
@@ -54,4 +55,3 @@ images:
   - name: booking-api
     newName: dkitdevops/booking_api
     newTag: v1.0
-  
